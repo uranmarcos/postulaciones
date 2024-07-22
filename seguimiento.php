@@ -44,37 +44,88 @@
             <div class="row d-flex justify-content-between mb-3">
                 
                 <div class="col-12 px-0">
-                    <div class="row d-flex justify-content-between">
+                    <div class="row d-flex justify-content-between align-items-center">
                         
-                        <div class="selectBuscar">
-                            <span class="labelBuscar"> Agregar al seguimiento...</span>
-                                
-                            <select class="form-control selectAgregar"  @change="agregarUsuario(usuarioSelect)" v-model="usuarioSelect">
-                                <option value="default" disabled>Seleccionar de mis asignados</option>
-                                <option v-for="opcion in asignados" :disabled="desabilitarOpcion(opcion.id)" v-bind:value="opcion">{{opcion.dni + " - " + opcion.nombre + " " + opcion.apellido}}</option>
-                            </select>
+                        <div class="col-12 col-sm-6 col-md-4 my-1 px-0">    
+                            <div class="selectBuscar">
+                                <span class="labelBuscar"> Agregar al seguimiento...</span>
+                                    
+                                <select class="form-control selectAgregar"  @change="agregarUsuario(usuarioSelect)" v-model="usuarioSelect">
+                                    <option value="default" disabled>Seleccionar de mis asignados</option>
+                                    <option v-for="opcion in asignados" :disabled="desabilitarOpcion(opcion.id)" v-bind:value="opcion">{{opcion.dni + " - " + opcion.nombre + " " + opcion.apellido}}</option>
+                                </select>
+                            </div>
                         </div>
-                        
-                        <!-- <button type="button" class="boton botonActualizar" @click="getUsuariosSeguimiento()">
-                            ACTUALIZAR
-                        </button> -->
-                        <button type="button" class="boton" @click="modalDni = true">
-                            <span  data-toggle="tooltip" data-placement="bottom" 
-                            title="Permite agregar por dni, sin importar a quien esté asignado. Si el usuario que busca no aparece con el dni, puede que no exista o n esté habilitado para realizar los test">
-                            AGREGAR POR DNI
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
-                                <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>                                    </svg>
-                            </span>
-                        </button>
 
-                        <button type="button" class="boton" @click="modalTerminar = true" v-if="usuarios.length != 0">
-                            TERMINAR SEGUIMIENTO
-                        </button>
+                        <div class="col-12 col-sm-6 col-md-4 my-1 contenedorDni px-0 px-md-1 d-flex justify-content-end justify-content-md-center">
+                            <div class="selectBuscar" v-click-outside="handleClickOutside">
+                                <span class="labelBuscar">Agregar por dni</span>
+                                <input 
+                                    class="form-control inputBuscar" 
+                                    autocomplete="off" 
+                                    @keyUp="buscarUsuario"
+                                    v-model="dniBusqueda"
+                                    ref="inputField"                                
+                                >
+                            </div>
+                            <ul class="list-group listadoDnis" ref="listadoDnis">
+                                <li 
+                                    class="list-group-item" 
+                                    :style="{ pointerEvents: permitirUsuarioBuscado(usuario) ? 'none' : 'auto' }"
+                                    :class="permitirUsuarioBuscado(usuario) ? 'itemListadoDniBloqueado' : 'itemListadoDni' "
+                                    v-for="(usuario, index) in usuariosBuscados"
+                                    @click="agregarUsuario(usuario)"
+                                >
+                                    {{usuario.nombre}} {{usuario.apellido}} <span class="textoRojo" v-if="permitirUsuarioBuscado(usuario)">(agregado)</span>
+                                </li>
+                            </ul>
+                        </div>
 
+                        <div class="col-12 col-sm-6 col-md-4 px-0 d-flex justify-content-end">
+                            <button type="button" class="boton botonTerminar" @click="modalTerminar = true" v-if="usuarios.length != 0">
+                                TERMINAR SEGUIMIENTO
+                            </button>
+                        </div>
+
+                        <div v-if="usuarios.length != 0" class="col-12 col-sm-6 col-md-4 my-1 mt-3 px-0 campoActualizacion">
+                            <div class="row">
+                                <div class="selectBuscar selectActualizacion">
+                                    <span class="labelBuscar"> Última actualizacion</span>
+                                    <input class="form-control campoActualizacion" disabled :value="ultimaActualizacion" id="dni">
+                                </div>
+                                <div class="refresh" @click="actualizar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
+                                        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div v-if="usuarios.length != 0" class="col-12 col-sm-6 col-md-4 my-1 mt-3 d-flex justify-content-center">
+                            <div class="selectBuscar">
+                                <span class="labelBuscar"> Filtrar por nombre/apellido</span>
+                                <input class="form-control" autocomplete="off" v-model="filtro" @keyUp="ordenarPorNombreApellido(filtro)">
+                            </div>
+                        </div>
+                      
+                        <div v-if="usuarios.length != 0" class="col-12 col-sm-6 col-md-4 mt-3 px-0 d-flex justify-content-end">
+                            <div>
+                                <button 
+                                    class="boton botonActualizar" 
+                                    data-toggle="collapse"
+                                    data-target=".multi-collapse" 
+                                    aria-expanded="false" 
+                                    aria-controls="multiCollapseExample1 multiCollapseExample2"
+                                    @click="desplegadas = !desplegadas"
+                                    >
+                                    {{desplegadas ? 'Colapsar todas' : 'Desplegar todas'}}
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-         
             <!-- END OPCIONES USUARIOS -->
 
             <!-- START COMPONENTE LOADING BUSCANDO USUARIOS -->
@@ -89,214 +140,234 @@
    
             <!-- START TABLA -->
             <div v-else>
-                <div v-if="usuarios.length != 0">
-                    <div class="row d-flex justify-content-between mt-0 mb-3">
-                    
-                        <div class="col-12 col-sm-6 px-0 actualizacion">
-                            Información actualizada a las: {{ultimaActualizacion}}  
-                        </div>  
-                        <div class="col-12 col-sm-6 px-0 d-flex justify-content-end">
-                            <button type="button" class="boton botonActualizar" @click="getUsuariosSeguimiento()">
-                                ACTUALIZAR
-                            </button>
-                        </div>
-                    </div>
-                    <div>
-                        <section class="row my-2" v-for="usuario in usuarios">
-                            <nav class="my-2 row">
-                                <div class="col-12 px-0  col-sm-4">
-                                    <span class="campoUsuario">
-                                        Nombre:
-                                    </span> 
-                                    <b>{{usuario.nombre}} {{usuario.apellido}}</b>
-                                    <br>
-                                    <span class="campoUsuario">
-                                        DNI:
-                                    </span>
-                                    <b>{{usuario.dni}}</b>
-                                    <br>
-                                    <span class="campoUsuario">
-                                        Contraseña:
-                                    </span>
-                                    <b>{{usuario.pass}}</b>
-                                </div>
-                                <div class="col-12 col-sm-2 d-flex align-items-center justify-content-center">
+                <div v-if="usuarios.length != 0">                    
+                    <p>
+                        <span class="accordion-header">
+                           
+                            <div class="accordion-item" v-for="usuario in usuarios">
+                                <div  
+                                    class="headerAcordeon"
                                     
-                                    <b>
-                                        {{
-                                            usuario.estado1 == 0 ? 'No empezó' :
-                                            usuario.estado1 == 1 ? 'Empezó Actividad 1' :
-                                            usuario.estado1 == 2 && usuario.estado2 == 0  ? 'Terminó Actividad 1' :
-                                            usuario.estado2 == 1 ? 'Empezó Actividad 2' :
-                                            usuario.estado2 == 2 && usuario.estado3 == 0  ? 'Terminó Actividad 2' :
-                                            usuario.estado3 == 1 ? 'Empezó Actividad 3' :
-                                            usuario.estado3 == 2 && usuario.estado4 == 0  ? 'Terminó Actividad 3' :
-                                            usuario.estado4 == 1 ? 'Empezó Actividad 4' :
-                                            usuario.estado4 == 2 && usuario.estado5 == 0  ? 'Termino Actividad 4' :
-                                            usuario.estado5 == 1 ? 'Empezó Actividad 5' :
-                                            usuario.estado5 == 2 && usuario.estado6 == 0  ? 'Terminó Actividad 5' :
-                                            usuario.estado6 == 1 ? 'Empezó Actividad 6' :
-                                            'Terminó Actividad 6'
-
-                                        }}
-                                    </b>
-                                </div>
-                                <div class="col-12 col-sm-2 d-flex align-items-center justify-content-center">
-                                    <b>
-                                        A1: 
-                                    
-                                        {{usuario.raven}}
-                                        <br>
-                                        
-                                        CT: 
-                                        {{usuario.ct}}
-                                    </b>
-                                </div>
-                                <div class="col-12 col-sm-4 d-flex px-0 justify-content-end">
-                                    <div class="text-center mx-1 " v-if="usuario.observacion">
-                                        <button type="button" class="btnObservacion btn-danger" data-toggle="tooltip" data-placement="bottom" :title="usuario.observacion">    
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle-fill" viewBox="0 0 16 16">
-                                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <div class="dropdown">
-                                        <button class="btnNuevo dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear-fill" viewBox="0 0 16 16">
-                                                <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
-                                            </svg>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a class="dropdown-item" @click="eliminarUsuario(usuario)" href="#">
-                                                    Terminar seguimiento
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item" @click="resetear(usuario)" href="#">
-                                                    Resetear Contraseña
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item" @click="observar(usuario)" href="#">
-                                                    Agregar Observación
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>    
-                                    <!-- <button type="button" @click="cambiarDetalle(usuario.id)" class="btnNuevo mx-1  btn-danger">    
-                                        VER
-                                    </button>         -->
-                                </div>
-                            </nav>
-                            <article class="col-12">     
-                                <div class="contenedorTest py-2 row">       
-                                    <div class="col-6 col-sm-4 col-md-2 cajaTest" :class="usuario.estado1 == 2 ? 'terminado' : ''" @click="verDetalle(usuario, 'actividad1')">
-                                        <b>ACTIVIDAD 1</b>
-                                        <br>
-                                        {{
-                                            usuario.estado1 == 0 ? "Sin Hacer" :
-                                            usuario.estado1 == 1 ? "Empezado" :
-                                            "Terminado" 
-                                        }}
-                                        <br>
-                                        <span>
-                                            Nivel actual: {{ usuario.nivel != 0 ? usuario.nivel : '-' }}
-                                        </span><br>
-                                        <span>
-                                            Tiempo: {{ convertirTiempo(usuario.tiempo) }}
-                                        </span><br>
-                                        <span :class="usuario.habilitado1 == 0 ? 'bloqueo' : 'exito'">
-                                            {{
-                                                usuario.habilitado1 == 0 ? "Bloqueado" : "Habilitado"
-                                            }}
+                                >
+                                    <nav class="headerAcordion"
+                                        data-toggle="collapse" 
+                                        :href="'#multiCollapse' + usuario.dni" 
+                                        role="button" 
+                                        aria-expanded="false" 
+                                        :aria-controls="'multiCollapse' + usuario.dni"
+                                    >
+                                        <span 
+                                            class=" col-6 px-5" 
+                                            :class="filtro != null && filtro.trim() != '' && (usuario.nombre.toLowerCase().includes(filtro.toLowerCase()) || usuario.apellido.toLowerCase().includes(filtro.toLowerCase())) ? 'resaltado' : ''"
+                                        >
+                                            {{usuario.nombre}}
                                         </span>
-                                    </div>
-
-                                    <div class="col-6 col-sm-4 col-md-2 cajaTest" :class="usuario.estado2 == 2 ? 'terminado' : ''" @click="verDetalle(usuario, 'actividad2')">
-                                        <b>ACTIVIDAD 2</b>
-                                        <br>
-                                        {{
-                                            usuario.estado2 == 0 ? "Sin Hacer" :
-                                            usuario.estado2 == 1 ? "Empezado" :
-                                            "Terminado" 
-                                        }}
-                                        <br>
-                                        <span :class="usuario.habilitado2 == 0 ? 'bloqueo' : 'exito'">
-                                            {{
-                                                usuario.habilitado2 == 0 ? "Bloqueado" : "Habilitado"
-                                            }}
-                                        </span>
-                                    </div>
-                                    
-                                    <div class="col-6 col-sm-4 col-md-2 cajaTest" :class="usuario.estado3 == 2 ? 'terminado' : ''" @click="verDetalle(usuario, 'actividad3')">
-                                        <b>ACTIVIDAD 3</b>
-                                        <br>
-                                        {{
-                                            usuario.estado3 == 0 ? "Sin Hacer" :
-                                            usuario.estado3 == 1 ? "Empezado" :
-                                            "Terminado" 
-                                        }}
-                                        <br>
-                                        <span :class="usuario.habilitado3 == 0 ? 'bloqueo' : 'exito'">
-                                            {{
-                                                usuario.habilitado3 == 0 ? "Bloqueado" : "Habilitado"
-                                            }}
-                                        </span>
-                                    </div>
+                                        <span class="col-6 d-flex align-items-center px-5 justify-content-end">
+                                            <b
                                                 
-                                    <div class="col-6 col-sm-4 col-md-2 cajaTest" :class="usuario.estado4 == 2 ? 'terminado' : ''" @click="verDetalle(usuario, 'actividad4')">
-                                        <b>ACTIVIDAD 4</b>
-                                        <br>
-                                        {{
-                                            usuario.estado4 == 0 ? "Sin Hacer" :
-                                            usuario.estado4 == 1 ? "Empezado" :
-                                            "Terminado" 
-                                        }}
-                                        <br>
-                                        <span :class="usuario.habilitado4 == 0 ? 'bloqueo' : 'exito'">
-                                            {{
-                                                usuario.habilitado4 == 0 ? "Bloqueado" : "Habilitado"
-                                            }}
+                                            >
+                                                {{
+                                                    usuario.estado1 == 0 ? 'No empezó' :
+                                                    usuario.estado1 == 1 ? 'Empezó Actividad 1' :
+                                                    usuario.estado1 == 2 && usuario.estado2 == 0  ? 'Terminó Actividad 1' :
+                                                    usuario.estado2 == 1 ? 'Empezó Actividad 2' :
+                                                    usuario.estado2 == 2 && usuario.estado3 == 0  ? 'Terminó Actividad 2' :
+                                                    usuario.estado3 == 1 ? 'Empezó Actividad 3' :
+                                                    usuario.estado3 == 2 && usuario.estado4 == 0  ? 'Terminó Actividad 3' :
+                                                    usuario.estado4 == 1 ? 'Empezó Actividad 4' :
+                                                    usuario.estado4 == 2 && usuario.estado5 == 0  ? 'Termino Actividad 4' :
+                                                    usuario.estado5 == 1 ? 'Empezó Actividad 5' :
+                                                    usuario.estado5 == 2 && usuario.estado6 == 0  ? 'Terminó Actividad 5' :
+                                                    usuario.estado6 == 1 ? 'Empezó Actividad 6' :
+                                                    'Terminó Actividad 6'
+    
+                                                }}
+                                            </b>
+                                            <b  v-if="usuario.estado1 == 0" class="mx-2 red">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-stop-fill" viewBox="0 0 16 16">
+                                                   <path d="M5 3.5h6A1.5 1.5 0 0 1 12.5 5v6a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 11V5A1.5 1.5 0 0 1 5 3.5"/>
+                                                </svg>
+                                            </b>
+                                            <b v-else-if="usuario.estado6 == 2" class="mx-2 green">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                                                </svg>
+                                            </b>
+                                            <b v-else class="mx-2 orange">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-hourglass-split" viewBox="0 0 16 16">
+                                                    <path d="M2.5 15a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1zm2-13v1c0 .537.12 1.045.337 1.5h6.326c.216-.455.337-.963.337-1.5V2zm3 6.35c0 .701-.478 1.236-1.011 1.492A3.5 3.5 0 0 0 4.5 13s.866-1.299 3-1.48zm1 0v3.17c2.134.181 3 1.48 3 1.48a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351z"/>
+                                                </svg>
+                                            </b>
                                         </span>
+                                    </nav>
+                                    <div class="col-12 pt-0">
+                                        <div class="collapse multi-collapse" :id="'multiCollapse' + usuario.dni">
+                                            <div class="card card-body pt-0">
+                                                <nav class="my-2 row">
+                                                    <div class="col-4 px-0 d-flex align-items-center">
+                                                        <span class="">
+                                                            DNI:
+                                                        </span>
+                                                        <b class="mx-2">{{usuario.dni}}</b>
+                                                    </div>
+                                                    <div class="col-4 px-0 d-flex align-items-center">
+                                                        <span class="">
+                                                            Contraseña:
+                                                        </span>
+                                                        <b class="mx-2">{{usuario.pass}}</b>
+                                                    </div> 
+                                                    <div class="col-2 px-0 d-flex align-items-center">
+                                                        <b>
+                                                            A1: 
+                                                                {{usuario.raven}}
+                                                            CT: 
+                                                                {{usuario.ct}}
+                                                        </b>
+                                                    </div>
+                                                    <div class="col-12 col-sm-2 d-flex px-0 justify-content-end">
+                                                        <div class="text-center mx-1 " v-if="usuario.observacion">
+                                                            <button type="button" class="btnObservacion btn-danger" data-toggle="tooltip" data-placement="bottom" :title="usuario.observacion">    
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle-fill" viewBox="0 0 16 16">
+                                                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+                                                                </svg>
+                                                            </button>
+                                                        </div>
+                                                        <div class="dropdown">
+                                                            <button class="btnNuevo dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear-fill" viewBox="0 0 16 16">
+                                                                    <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
+                                                                </svg>
+                                                            </button>
+                                                            <ul class="dropdown-menu">
+                                                                <li>
+                                                                    <a class="dropdown-item" @click="eliminarUsuario(usuario)" href="#">
+                                                                        Terminar seguimiento
+                                                                    </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a class="dropdown-item" @click="resetear(usuario)" href="#">
+                                                                        Resetear Contraseña
+                                                                    </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a class="dropdown-item" @click="observar(usuario)" href="#">
+                                                                        Agregar Observación
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>    
+                                                    </div>
+                                                </nav>
+                                                <div class="contenedorTest row">       
+                                                    <div class="col-6 col-sm-4 col-md-2 cajaTest" :class="usuario.estado1 == 2 ? 'terminado' : ''" @click="verDetalle(usuario, 'actividad1')">
+                                                        <b>ACTIVIDAD 1</b>
+                                                        <br>
+                                                        {{
+                                                            usuario.estado1 == 0 ? "Sin Hacer" :
+                                                            usuario.estado1 == 1 ? "Empezado" :
+                                                            "Terminado" 
+                                                        }}
+                                                        <br>
+                                                        <span>
+                                                            Nivel actual: {{ usuario.nivel != 0 ? usuario.nivel : '-' }}
+                                                        </span><br>
+                                                        <span>
+                                                            Tiempo: {{ convertirTiempo(usuario.tiempo) }}
+                                                        </span><br>
+                                                        <span :class="usuario.habilitado1 == 0 ? 'bloqueo' : 'exito'">
+                                                            {{
+                                                                usuario.habilitado1 == 0 ? "Bloqueado" : "Habilitado"
+                                                            }}
+                                                        </span>
+                                                    </div>
+    
+                                                    <div class="col-6 col-sm-4 col-md-2 cajaTest" :class="usuario.estado2 == 2 ? 'terminado' : ''" @click="verDetalle(usuario, 'actividad2')">
+                                                        <b>ACTIVIDAD 2</b>
+                                                        <br>
+                                                        {{
+                                                            usuario.estado2 == 0 ? "Sin Hacer" :
+                                                            usuario.estado2 == 1 ? "Empezado" :
+                                                            "Terminado" 
+                                                        }}
+                                                        <br>
+                                                        <span :class="usuario.habilitado2 == 0 ? 'bloqueo' : 'exito'">
+                                                            {{
+                                                                usuario.habilitado2 == 0 ? "Bloqueado" : "Habilitado"
+                                                            }}
+                                                        </span>
+                                                    </div>
+                                                    
+                                                    <div class="col-6 col-sm-4 col-md-2 cajaTest" :class="usuario.estado3 == 2 ? 'terminado' : ''" @click="verDetalle(usuario, 'actividad3')">
+                                                        <b>ACTIVIDAD 3</b>
+                                                        <br>
+                                                        {{
+                                                            usuario.estado3 == 0 ? "Sin Hacer" :
+                                                            usuario.estado3 == 1 ? "Empezado" :
+                                                            "Terminado" 
+                                                        }}
+                                                        <br>
+                                                        <span :class="usuario.habilitado3 == 0 ? 'bloqueo' : 'exito'">
+                                                            {{
+                                                                usuario.habilitado3 == 0 ? "Bloqueado" : "Habilitado"
+                                                            }}
+                                                        </span>
+                                                    </div>
+                                                                
+                                                    <div class="col-6 col-sm-4 col-md-2 cajaTest" :class="usuario.estado4 == 2 ? 'terminado' : ''" @click="verDetalle(usuario, 'actividad4')">
+                                                        <b>ACTIVIDAD 4</b>
+                                                        <br>
+                                                        {{
+                                                            usuario.estado4 == 0 ? "Sin Hacer" :
+                                                            usuario.estado4 == 1 ? "Empezado" :
+                                                            "Terminado" 
+                                                        }}
+                                                        <br>
+                                                        <span :class="usuario.habilitado4 == 0 ? 'bloqueo' : 'exito'">
+                                                            {{
+                                                                usuario.habilitado4 == 0 ? "Bloqueado" : "Habilitado"
+                                                            }}
+                                                        </span>
+                                                    </div>
+                                                        
+                                                    <div class="col-6 col-sm-4 col-md-2 cajaTest" :class="usuario.estado5 == 2 ? 'terminado' : ''" @click="verDetalle(usuario, 'actividad5')">
+                                                        <b>ACTIVIDAD 5</b>
+                                                        <br>
+                                                        {{
+                                                            usuario.estado5 == 0 ? "Sin Hacer" :
+                                                            usuario.estado5 == 1 ? "Empezado" :
+                                                            "Terminado" 
+                                                        }}
+                                                        <br>
+                                                        <span :class="usuario.habilitado5 == 0 ? 'bloqueo' : 'exito'">
+                                                            {{
+                                                                usuario.habilitado5 == 0 ? "Bloqueado" : "Habilitado"
+                                                            }}
+                                                        </span>
+                                                    </div>
+                                                        
+                                                    <div class="col-6 col-sm-4 col-md-2 cajaTest" :class="usuario.estado6 == 2 ? 'terminado' : ''" @click="verDetalle(usuario, 'actividad6')">
+                                                        <b>ACTIVIDAD 6</b>
+                                                        <br>
+                                                        {{
+                                                            usuario.estado6 == 0 ? "Sin Hacer" :
+                                                            usuario.estado6 == 1 ? "Empezado" :
+                                                            "Terminado" 
+                                                        }}
+                                                        <br>
+                                                        <span :class="usuario.habilitado6 == 0 ? 'bloqueo' : 'exito'">
+                                                            {{
+                                                                usuario.habilitado6 == 0 ? "Bloqueado" : "Habilitado"
+                                                            }}
+                                                        </span>
+                                                    </div>
+                                                </div>   
+                                            </div>
+                                        </div>
                                     </div>
-                                            
-                                    <div class="col-6 col-sm-4 col-md-2 cajaTest" :class="usuario.estado5 == 2 ? 'terminado' : ''" @click="verDetalle(usuario, 'actividad5')">
-                                        <b>ACTIVIDAD 5</b>
-                                        <br>
-                                        {{
-                                            usuario.estado5 == 0 ? "Sin Hacer" :
-                                            usuario.estado5 == 1 ? "Empezado" :
-                                            "Terminado" 
-                                        }}
-                                        <br>
-                                        <span :class="usuario.habilitado5 == 0 ? 'bloqueo' : 'exito'">
-                                            {{
-                                                usuario.habilitado5 == 0 ? "Bloqueado" : "Habilitado"
-                                            }}
-                                        </span>
-                                    </div>
-                                        
-                                    <div class="col-6 col-sm-4 col-md-2 cajaTest" :class="usuario.estado6 == 2 ? 'terminado' : ''" @click="verDetalle(usuario, 'actividad6')">
-                                        <b>ACTIVIDAD 6</b>
-                                        <br>
-                                        {{
-                                            usuario.estado6 == 0 ? "Sin Hacer" :
-                                            usuario.estado6 == 1 ? "Empezado" :
-                                            "Terminado" 
-                                        }}
-                                        <br>
-                                        <span :class="usuario.habilitado6 == 0 ? 'bloqueo' : 'exito'">
-                                            {{
-                                                usuario.habilitado6 == 0 ? "Bloqueado" : "Habilitado"
-                                            }}
-                                        </span>
-                                    </div>
-                                </div>           
-                            </article>
-                        </section>
-                    </div>
-                  
+                                </div>
+                            </div>
+                        </span>
+                    </p>
                 </div>
              
                 <div class="contenedorTabla" v-else>
@@ -365,48 +436,6 @@
                 </div>    
             </div>    
             <!-- END MODAL TERMINAR SEGUIMIENTO -->
-
-            <!-- START MODAL BUSCAR POR DNI -->
-            <div v-if="modalDni">
-                <div id="myModal" class="modal">
-                    <div class="modal-content px-0 py-0">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="">BUSCAR POR DNI</h5>
-                            <svg xmlns="http://www.w3.org/2000/svg" @click="cerrarModalDni()" width="30" height="30" fill="currentColor" class="bi closeModal bi-x-circle-fill" viewBox="0 0 16 16">
-                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
-                            </svg>
-                        </div>
-                        
-                        <div class="modal-body modalBodyEliminar">
-                            <span class="ayudaModal">
-                                Permite agregar por dni, sin importar a quien esté asignado. 
-                                Si el usuario que busca no aparece con el dni, puede que no exista o no esté habilitado para realizar los test
-                            </span>
-                            <input 
-                                class="form-control inputBuscar" 
-                                autocomplete="off" 
-                                @keyUp="buscarUsuario"
-                                v-model="dniBusqueda"
-                            >
-                        </div>
-                        <div class="row">
-                            <div class="col-10 px-0">
-                                <span v-for="(usuario, index) in usuariosBuscados" :class="index == 0 ? 'mx-0' : 'mx-1' ">
-                                    <button class="badge text-bg-success pointer m-2" :disabled="permitirUsuarioBuscado(usuario)" @click="agregarUsuario(usuario)"> 
-                                        {{usuario.nombre}} {{usuario.apellido}} 
-                                    </button>
-                                </span>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="modal-footer d-flex justify-content-center">
-                                <button type="button" class="botonCancelar" @click="cerrarModalDni()" id="" data-dismiss="modal">CERRAR</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>    
-            </div>    
-            <!-- END MODAL BUSCAR POR DNI-->
 
             <!-- START MODAL DETALLE -->
             <div v-if="modalDetalle">
@@ -592,7 +621,7 @@
                     </div>
                 </div>    
             </div>    
-            <!-- END MODAL RESETEAR CONTRASEÑA --> 
+            <!-- END MODAL OBSERVAR USUARIO CONTRASEÑA --> 
         
             <!-- START NOTIFICACION -->
             <div role="alert" id="mitoast" @mouseover="ocultarToast" aria-live="assertive" aria-atomic="true" class="toast">
@@ -612,6 +641,63 @@
         </div>
     </div>
     <style scoped>
+        .refresh {
+            width: 40px;
+            border: solid 1px green;
+            color: green;
+            border-radius: 10px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .refresh:hover{
+            cursor: pointer;
+        }
+        .red {
+            color: red;
+        }
+        .orange{
+            color: orange;
+        }
+        .green{
+            color: green;
+        }
+        .headerAcordion{
+            display: flex;
+            align-items: center;
+            width: 100%;
+            height: 50px;
+            border: solid 1px grey;
+        }
+        .selectBuscar{
+            width: 250px;
+        }
+        .selectActualizacion{
+            width: 210px;
+        }
+        .textoRojo{
+            color: red;
+            font-size: 10px;
+        }
+        .itemListadoDniBloqueado{
+            background: lightgrey;
+        }
+        .itemListadoDni:hover{
+            background: lightgrey;
+            cursor: pointer;
+        }
+        .contenedorDni{
+            position: relative;
+        }
+        .listadoDnis{
+            position: absolute;
+            top: 37px;
+            z-index: 10;
+        }
+        .resaltado {
+            background: yellow;
+        }
         .btnObservacion{
             width: 80px;
             color: #E52008;
@@ -635,6 +721,10 @@
         .btnNuevo:hover{
             background: rgb(124, 69, 153);
             color: white;
+        }
+        .headerAcordeon {
+            border: solid 1px grey;
+            color: black;
         }
         .campoUsuario{
             display:inline;   
@@ -672,15 +762,29 @@
             text-align: center;
             margin: 0;
         }
+        .botonTerminar{
+            min-width: 250px;
+            height: 37px;
+        }
+        .botonTerminar:hover{
+            background: white;
+            color: rgb(124, 69, 153); 
+            font-weight: bolder;
+        }
         .botonActualizar{
             color: green;
             height: 37px;
+            min-width: 250px;
             border: solid 1px green;
         }
         .botonActualizar:hover{
-            background: green;
+            /* background: green;
             color: white;
+            border: solid 1px ; */
+            background: white;
             border: solid 1px green;
+            color: green;
+            font-weight: bolder
         }
         .pointer{
             cursor: pointer;
@@ -770,9 +874,32 @@
         .modalContentDetalle{
             width: 600px;
         }
+        .campoActualizacion{
+            background-color: white !important;
+            text-align: center;
+        }
+        
             
     </style>
     <script>
+        Vue.directive('click-outside', {
+            bind(el, binding, vnode) {
+                el.__clickOutsideHandler__ = function (event) {
+                    const elementsToAvoid = [
+                        vnode.context.$refs.inputField,
+                        vnode.context.$refs.listadoDnis
+                    ];
+                    if (elementsToAvoid.every(el => !el.contains(event.target))) {
+                        binding.value(event);
+                    }
+                };
+                document.addEventListener('click', el.__clickOutsideHandler__);
+            },
+            unbind(el) {
+                document.removeEventListener('click', el.__clickOutsideHandler__);
+                delete el.__clickOutsideHandler__;
+            }
+        });
         var app = new Vue({
             el: "#app",
             components: {
@@ -787,7 +914,6 @@
                 usuarioSelect: "default",
                 seguidos: [],
                 modalTerminar: false,
-                modalDni: false,
                 modalEliminar: false,
                 usuarios: [],       
                 tiempoAsignable: null,   
@@ -796,15 +922,14 @@
                 modalObservar: false,
                 observando: false,
                 ultimaActualizacion: null,
-                
-                
-                
+                filtro: null,
                 ///
                 modalResetear: false,
                 reseteando: false,
                 buscando: false,
                 tituloToast: null,
-                textoToast: null
+                textoToast: null,
+                desplegadas: false
             },
             mounted () {
                 this.seguidos = localStorage.getItem("usuariosSeguimiento") ? JSON.parse(localStorage.getItem("usuariosSeguimiento")) : [];
@@ -815,8 +940,35 @@
                 }
             },
             methods:{
-                cambiarDetalle (id) {
-                    console.log(id);
+                handleClickOutside() {
+                    if (this.dniBusqueda != null) {
+                        this.limpiarBusqueda()
+                    }
+                },
+                toggle(dni) {
+                    const usuario = this.usuarios.find(u => u.dni === dni);
+                    if (usuario) {
+                        usuario.isOpen = !usuario.isOpen;
+                    }
+                    console.log(usuario);
+                },
+                ordenarPorNombreApellido(valor) {
+                    if (valor === null || valor === '') {
+                        this.usuarios.sort(app.ordenarUsuarios);
+                    } else {
+                        return this.usuarios.sort((a, b) => {
+                            const aNombreCompleto = `${a.nombre} ${a.apellido}`.toLowerCase();
+                            const bNombreCompleto = `${b.nombre} ${b.apellido}`.toLowerCase();
+                            const valorLower = valor.toLowerCase();
+    
+                            const aContiene = aNombreCompleto.includes(valorLower);
+                            const bContiene = bNombreCompleto.includes(valorLower);
+    
+                            if (aContiene && !bContiene) return -1;
+                            if (!aContiene && bContiene) return 1;
+                            return 0;
+                        });
+                    }
                 },
                 changeContador(observacion) {
                     if (observacion) {
@@ -830,11 +982,6 @@
                     const tiempoFormateado = `${minutos}:${segundosRestantes.toString().padStart(2, '0')}`;
 
                     return tiempoFormateado;
-                },
-                cerrarModalDni() {
-                    this.modalDni = false;
-                    this.usuariosBuscados = [];
-                    this.dniBusqueda = null;
                 },
                 permitirUsuarioBuscado(usuario) {
                     if (this.usuarios.find(element => element.id == usuario.id)) {
@@ -907,14 +1054,20 @@
                     formdata.append("idUsuario", usuario.id);
                     axios.post("funciones/asignados.php?accion=crearSeguimiento", formdata)
                     .then(function(response){    
+                        console.log(response);
                         if (response.data.error) {
                             app.mostrarToast("Error", response.data.mensaje);
                         } else {
-                            app.agregarAlSeguimiento(usuario)
+                            app.agregarAlSeguimiento(usuario);
+                            app.limpiarBusqueda();
                         }   
                     }).catch( error => {
                         app.mostrarToast("Error", "No se pudo cargar al usuario para el seguimiento");
                     });
+                },
+                limpiarBusqueda () {
+                    this.dniBusqueda = null;
+                    this.usuariosBuscados = [];
                 },
                 agregarAlSeguimiento(usuario){
                     this.seguidos.push(usuario)
@@ -951,12 +1104,6 @@
                 },
                 getUsuariosSeguimiento() {
                     this.usuarios = [];
-                    // let u = this.seguidos.split(",");
-                    // this.buscandoUsuarios = true;
-                    // u.forEach((element, index) => {
-                    //     let ultimo = (index == (u.length -1)) ? true : false;
-                    //     this.consultarUsuarioSeguimiento(element.trim(), ultimo);
-                    // });
                     let ids = "";
                     this.seguidos.forEach((element, index) => {
                         ids = ids + element.id + ", ";
@@ -977,40 +1124,6 @@
                     }
                     app.modalEliminar = false;
                 },
-                consultarUsuarioSeguimiento(id, ultimo) {
-                    let formdata = new FormData();
-                    formdata.append("idUsuario", id);
-                    axios.post("funciones/seguimiento.php?accion=getUsuarioSeguimiento", formdata)
-                    .then(function(response){    
-                       
-                        if (response.data.error) {
-                            app.mostrarToast("Error", response.data.mensaje);
-                        } else {
-                            if (response.data.usuarios != false) {
-                                app.validarEstado(response.data.usuario[0])
-                                app.usuarios.push(response.data.usuario[0]);
-                                app.usuarios.sort(app.ordenarUsuarios);
-                            } else {
-                                app.mostrarToast("Error", "No se pudo recuperar todos los usuarios");
-                            }
-                        }
-                        if (ultimo) {
-                            var fechaActual = new Date();
-                            var hora = app.formatearNumero(fechaActual.getHours());
-                            var minuto = app.formatearNumero(fechaActual.getMinutes());
-                            var segundo = app.formatearNumero(fechaActual.getSeconds());
-
-                            app.buscandoUsuarios = false;
-                            app.ultimaActualizacion = hora + ":" + minuto + ":" + segundo + "hs";
-                            app.usuarios.sort(app.ordenarUsuarios);
-                        }
-                    }).catch( error => {
-                        if (ultimo) {
-                            app.buscandoUsuarios = false;
-                        }
-                        app.mostrarToast("Error", "No se pudo recuperar todos los usuarios");
-                    });
-                },
                 getSeguimiento(ids) {
                     this.buscandoUsuarios = true;
                     let formdata = new FormData();
@@ -1022,6 +1135,15 @@
                         } else {
                             if (response.data.usuarios != false) {
                                 app.usuarios = response.data.usuario
+                                if (app.filtro) {
+                                    app.ordenarPorNombreApellido(app.filtro)
+                                } else {
+                                    app.usuarios.sort(app.ordenarUsuarios);
+                                }
+                                // app.usuarios.forEach(element => {
+                                //     element.isOpen = true
+                                //     console.log(element);
+                                // });
                                 app.validarEstado()
                             } else {
                                 app.mostrarToast("Error", "No se pudo recuperar todos los usuarios");
@@ -1034,7 +1156,7 @@
                         var segundo = app.formatearNumero(fechaActual.getSeconds());
 
                         app.buscandoUsuarios = false;
-                        app.ultimaActualizacion = hora + ":" + minuto + ":" + segundo + "hs";
+                        app.ultimaActualizacion = hora + ":" + minuto + ":" + segundo + "hs" + " (" + app.usuarios.length + " en curso)";
                         setTimeout(() => {
                             app.actualizar()
                         }, 60000);
@@ -1048,37 +1170,7 @@
                         ids = ids + element.id + ", ";
                     });
                     ids = ids.slice(0, -2);
-                    let formdata = new FormData();
-                    formdata.append("ids", ids);
-                    axios.post("funciones/seguimiento.php?accion=getSeguimiento", formdata)
-                    .then(function(response){    
-                        if (response.data.error) {
-                            app.mostrarToast("Error", response.data.mensaje);
-                        } else {
-                            if (response.data.usuarios != false) {
-                                app.usuarios = [];
-                                app.usuarios = response.data.usuario
-                                app.validarEstado()
-                            } else {
-                                app.mostrarToast("Error", "No se pudo recuperar todos los usuarios");
-                            }
-                        }
-                        
-                        var fechaActual = new Date();
-                        var hora = app.formatearNumero(fechaActual.getHours());
-                        var minuto = app.formatearNumero(fechaActual.getMinutes());
-                        var segundo = app.formatearNumero(fechaActual.getSeconds());
-
-                        app.ultimaActualizacion = hora + ":" + minuto + ":" + segundo + "hs";
-                        setTimeout(() => {
-                            app.actualizar()
-                        }, 60000);
-                    }).catch( error => {
-                        // if (ultimo) {
-                        //     app.buscandoUsuarios = false;
-                        // }
-                        app.mostrarToast("Error", "No se pudo recuperar todos los usuarios");
-                    });
+                    this.getSeguimiento(ids);
                 },
                 validarEstado() {
                     this.usuarios.forEach(element => {
