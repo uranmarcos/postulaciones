@@ -792,7 +792,7 @@
         textarea{
             min-height: 250px !important;
             width: 300px;
-            font-size: 10   px;
+            font-size: 10px;
         }
         .selectAgregar{
             position: relative:
@@ -1109,6 +1109,7 @@
                         ids = ids + element.id + ", ";
                     });
                     ids = ids.slice(0, -2);
+                    this.buscandoUsuarios = true;
                     this.getSeguimiento(ids);
                 },
                 eliminarUsuarioSeguimiento (id) {
@@ -1125,7 +1126,7 @@
                     app.modalEliminar = false;
                 },
                 getSeguimiento(ids) {
-                    this.buscandoUsuarios = true;
+                    // this.buscandoUsuarios = true;
                     let formdata = new FormData();
                     formdata.append("ids", ids);
                     axios.post("funciones/seguimiento.php?accion=getSeguimiento", formdata)
