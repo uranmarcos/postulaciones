@@ -43,7 +43,7 @@ if (!$_SESSION["autenticado"] || $_SESSION["rol"] == "postulante" ) {
          
             <!-- START OPCIONES USUARIOS -->
             <div class="row d-flex justify-content-between mb-3">
-                <div class="col-12 col-md-4 px-0 selectUsuarios" v-if="!busqueda">
+                <div class="col-12 col-md-3 px-0 selectUsuarios" v-if="!busqueda">
                     <span class="labelUsuarios"> Ver usuarios...</span>
                     <select class="form-control" name="filtro" id="filtro" @change="consultarUsuarios" v-model="filtro">
                         <option v-for="opcion in opciones" v-bind:value="opcion.id">{{opcion.texto}}</option>
@@ -75,9 +75,39 @@ if (!$_SESSION["autenticado"] || $_SESSION["rol"] == "postulante" ) {
 
                     </div>
                 </div>
+
+                <div class="col-12 col-md-4 px-0">
+                    <div class="row d-flex" :class="pantalla == 'usuarios' ? 'justify-content-around' : 'justify-content-left'">
+                        <div class="selectBuscar">
+                            <span 
+                                class="labelBuscar"
+                            > Buscar por apellido/nombre...</span>
+                            <input 
+                                placeholder="4 caracteres minimo"
+                                class="form-control inputBuscar" 
+                                autocomplete="off" 
+                                @keyUp="buscarUsuarioPorNombre"
+                                v-model="nombreBusqueda"
+                            >
+                        </div>
+        
+                        <button 
+                            type="button" 
+                            @click="borrarBusqueda"  
+                            class="botonCancelar mx-"
+                            v-if="busqueda"    
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                            </svg>
+                        </button>
+
+
+                    </div>
+                </div>
                     
                                 
-                <div class="col-12 col-md-4 px-0">
+                <div class="col-12 col-md-1 px-0">
                     <div class="row d-flex justify-content-end">
                         <div class="col-10  px-0 d-flex justify-content-end">
                             <div class="dropdown">
@@ -95,7 +125,7 @@ if (!$_SESSION["autenticado"] || $_SESSION["rol"] == "postulante" ) {
                                     <li><a class="dropdown-item" href="carga.php">Archivo</a></li>
                                 </ul> -->
                                 <button class="boton dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    ACCIONES
+                                    +
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" href="#" @click="mostrarAsignacionGrupal()">ASIGNACIÓN GRUPAL</a></li>
@@ -587,6 +617,7 @@ if (!$_SESSION["autenticado"] || $_SESSION["rol"] == "postulante" ) {
                 modalReseteo: false,
                 busqueda: "default",
                 dniBusqueda: null,
+                nombreBusqueda: null,
                 usuarios: [],
                 usuario:{
                     id: null,
@@ -884,8 +915,41 @@ if (!$_SESSION["autenticado"] || $_SESSION["rol"] == "postulante" ) {
                         this.consultarUsuarios()
                     }
                 },
+                buscarUsuarioPorNombre() {
+                    if (this.nombreBusqueda != null && this.nombreBusqueda.trim() != "" && this.nombreBusqueda.length > 3) {
+                        this.busqueda = false;
+                        this.alertBusqueda = false;
+                        this.buscandoUsuarios = true;
+                        let formdata = new FormData();
+                        formdata.append("nombre", this.nombreBusqueda);
+                        axios.post("funciones/usuarios.php?accion=buscarUsuarioPorNombre", formdata)
+                        .then(function(response){    
+                            app.buscandoUsuarios = false;
+                            if (response.data.error) {
+                                app.mostrarToast("Error", response.data.mensaje);
+                            } else {
+                                if (response.data.usuarios != false) {
+                                    app.busqueda = true;
+                                    app.usuarios = response.data.usuarios;
+                                } else {
+                                    app.usuarios = []
+                                }
+                            }
+                        }).catch( error => {
+                            app.buscandoUsuarios = false;
+                            app.mostrarToast("Error", "No se pudo recuperar los usuarios");
+                        });
+                    }
+                    if (this.nombreBusqueda == null || this.nombreBusqueda.trim() == '') {
+                        this.consultarUsuarios();
+                    }
+                    // else {
+                    //     this.consultarUsuarios()
+                    // }
+                },
                 borrarBusqueda(){
                    this.dniBusqueda = null;
+                   this.nombreBusqueda = null;
                    this.busqueda = false;
                    this.consultarUsuarios();
                 },

@@ -4,8 +4,8 @@ class ApptivaDB {
     // private $usuario = "root";
     // private $clave = "";
     // private $db = "postulaciones";
-    // public $conexion;  
-
+    // public $conexion; 
+    
     private $host = "localhost";
     private $usuario = "postulaciones";
     private $clave = 'z$c6D4g07';
@@ -61,10 +61,60 @@ class ApptivaDB {
         }
     }
 
+    public function buscarUsuarioPorNombre($nombre) {
+        try {
+            $resultado = $this->conexion->query("SELECT U.id, U.nombre, U.apellido, U.dni, U.provincia, U.observacion, U.telefono, U.anio, U.pass, 
+            U.raven, U.ct, U.habilitado, U.asignado,
+            CASE WHEN U.asignado = 0 THEN '-' ELSE CONCAT(UU.nombre, ' ', UU.apellido) END AS nombreAsignado 
+            FROM usuarios U
+            LEFT JOIN usuarios UU ON U.asignado = UU.id
+            WHERE (U.nombre LIKE '%$nombre%' OR U.apellido LIKE '%$nombre%') AND U.rol = 'postulante' ORDER BY U.dni") or die();
+            return $resultado->fetch_all(MYSQLI_ASSOC);
+        } catch (\Throwable $th) {
+            return false;
+        }
+    }
+
     public function insertarUsuario($datos) {
         try {
-            $resultado = $this->conexion->query("INSERT INTO usuarios VALUES(null, $datos)") or die();
-            return true;
+            // $resultado = $this->conexion->query("INSERT INTO usuarios VALUES(null, $datos)") or die();
+            // return true;
+            
+            $sql = "INSERT INTO usuarios (nombre, apellido, dni, pass, mail, rol, anio, provincia, telefono, asignado, observacion, raven, ct, habilitado, fechaTerminado) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            // Preparar la sentencia
+            $stmt = $this->conexion->prepare($sql);
+
+            if ($stmt === false) {
+                throw new Exception($this->conexion->error);
+            }
+            $null = null;
+            // Vincular los parámetros a la sentencia preparada
+            $stmt->bind_param(
+                'sssssssssssssss', 
+                $datos['nombre'], 
+                $datos['apellido'], 
+                $datos['dni'], 
+                $datos['contrasenia'], 
+                $null, 
+                $datos['rol'], 
+                $datos['anio'], 
+                $datos['provincia'], 
+                $datos['telefono'], 
+                $datos['asignado'], 
+                $null, 
+                $datos['test'], 
+                $datos['test'], 
+                $datos['habilitado'], 
+                $null
+            );
+            if ($stmt->execute()) {
+                return true;
+            } else {
+                return false;
+                // throw new Exception($stmt->error);
+            }
         } catch (\Throwable $th) {
             // return $th;
             return false;

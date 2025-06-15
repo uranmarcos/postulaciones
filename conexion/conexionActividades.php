@@ -25,12 +25,7 @@ class ApptivaDB {
             $resultado = $this->conexion->query("SELECT S.estado1, S.habilitado1, S.resultado1, tiempo, nivel 
                 FROM seguimiento S WHERE S.idUsuario = '$id'") or die();
 
-            // return $resultado->fetch_all(MYSQLI_ASSOC);
-            $filas = array();
-            while ($fila = $resultado->fetch_assoc()) {
-                $filas[] = $fila;
-            }
-            return $filas;
+            return $resultado->fetch_all(MYSQLI_ASSOC);
         } catch (\Throwable $th) {
             return false;
         }
@@ -66,12 +61,7 @@ class ApptivaDB {
                 $resultado = $this->conexion->query("SELECT S.estado6, S.habilitado6, S.resultado6 
                 FROM seguimiento S WHERE S.idUsuario = '$id'") or die();
             }
-            // return $resultado->fetch_all(MYSQLI_ASSOC);
-            $filas = array();
-            while ($fila = $resultado->fetch_assoc()) {
-                $filas[] = $fila;
-            }
-            return $filas;
+            return $resultado->fetch_all(MYSQLI_ASSOC);
         } catch (\Throwable $th) {
             return false;
         }
@@ -149,12 +139,7 @@ class ApptivaDB {
             if ($actividad == 6) {
                 $resultado = $this->conexion->query("SELECT habilitado6 AS 'habilitado' FROM seguimiento WHERE idUsuario = '$id'") or die();
             }
-            // return $resultado->fetch_all(MYSQLI_ASSOC);
-            $filas = array();
-            while ($fila = $resultado->fetch_assoc()) {
-                $filas[] = $fila;
-            }
-            return $filas;
+            return $resultado->fetch_all(MYSQLI_ASSOC);
         } catch (\Throwable $th) {
             return false;
         }
@@ -189,12 +174,7 @@ class ApptivaDB {
     public function calcularCT($id) {
         try {
             $resultado = $this->conexion->query("SELECT resultado2, resultado3, resultado4, resultado5, resultado6 FROM seguimiento S WHERE S.idUsuario = '$id'") or die();
-            // return $resultado->fetch_all(MYSQLI_ASSOC);
-            $filas = array();
-            while ($fila = $resultado->fetch_assoc()) {
-                $filas[] = $fila;
-            }
-            return $filas;
+            return $resultado->fetch_all(MYSQLI_ASSOC);
         } catch (\Throwable $th) {
             return false;
         }

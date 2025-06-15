@@ -64,6 +64,22 @@
 
         break;
 
+        case 'buscarUsuarioPorNombre':
+            $nombre = $_POST["nombre"];
+                    
+            $u = $user -> buscarUsuarioPorNombre($nombre);
+
+            if ($u || $u == []) { 
+                $res["usuarios"] = $u;
+                $res["mensaje"] = "La consulta se realizó correctamente";
+            } else {
+                $res["usuarios"] = $u;
+                $res["mensaje"] = "Hubo un error al recuperar la información";
+                $res["error"] = true;
+            } 
+
+        break;
+
         case 'asignarUsuario':
             $idUsuario = $_POST["idUsuario"];
             $idVoluntario = $_POST["idVoluntario"];
@@ -113,9 +129,21 @@
                 break;
             }
 
-            $data = "'" . $nombre . "', '" . $apellido . "', '" . $dni . "', '" . $contrasenia . "', '" . $null . "', '" . $rol .
-             "', '" . $anio . "', '" . $provincia . "', '" . $telefono . "', '" . $asignado . "', '" . $null . "', '" . $test .
-             "', '" . $test . "', '" . $habilitado . "', '" . $null . "'";
+            $data["nombre"]     =   $nombre;
+            $data["apellido"]   =   $apellido;
+            $data["dni"]        =   $dni;
+            $data["contrasenia"]        =   $contrasenia;
+            $data["rol"]        =   $rol;
+            $data["anio"]        =   $anio;
+            $data["provincia"]        =   $provincia;
+            $data["telefono"]        =   $telefono;
+            $data["asignado"]        =   $asignado;
+            $data["test"]        =   $test;
+            $data["habilitado"]        =   $habilitado;
+
+            // $data = "'" . $nombre . "', '" . $apellido . "', '" . $dni . "', '" . $contrasenia . "', '" . $null . "', '" . $rol .
+            //  "', '" . $anio . "', '" . $provincia . "', '" . $telefono . "', '" . $asignado . "', '" . $null . "', '" . $test .
+            //  "', '" . $test . "', '" . $habilitado . "', '" . $null . "'";
             $u = $user -> insertarUsuario($data);
            
             if ($u) {

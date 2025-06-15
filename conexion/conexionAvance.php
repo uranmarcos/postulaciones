@@ -25,12 +25,7 @@ class ApptivaDB {
     public function consultarVoluntarios() {
         try {
             $resultado = $this->conexion->query("SELECT id, CONCAT(nombre, ' ', apellido) voluntario FROM usuarios WHERE rol != 'postulante' AND habilitado = 1 ORDER BY apellido") or die();
-            // return $resultado->fetch_all(MYSQLI_ASSOC);
-            $filas = array();
-            while ($fila = $resultado->fetch_assoc()) {
-                $filas[] = $fila;
-            }
-            return $filas;
+            return $resultado->fetch_all(MYSQLI_ASSOC);
         } catch (\Throwable $th) {
             return false;
         }

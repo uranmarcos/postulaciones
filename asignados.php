@@ -144,8 +144,24 @@
                     </svg>
                   
                 </div>
-                <div class="col-12 col-md-2 px-0 resumen pendientes">
+                <div 
+                    class="col-12 col-md-2 px-0 resumen pendientes"
+                    :class="parseInt(avance.total) - (parseInt(avance.terminados) + parseInt(avance.empezados)) != 0 ? 'cursor' : '' "
+                    @click="getSinHacer"    
+                >
                     {{parseInt(avance.total) - (parseInt(avance.terminados) + parseInt(avance.empezados))}} sin hacer
+                    <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        width="17" 
+                        height="17" 
+                        fill="currentColor" 
+                        class=" mx-1 bi mb-0 bi-eye-fill orange" 
+                        viewBox="0 0 16 16"
+                        v-if="(parseInt(avance.total) - (parseInt(avance.terminados) + parseInt(avance.empezados))) != 0"
+                    >
+                        <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                        <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                    </svg>
                 </div>
                 <div class="col-12 col-md-1 px-0 resumen cerrar" @click="mostrarAvance = false">
                     x
@@ -746,6 +762,55 @@
                 </div>    
             </div>    
             <!-- END MODAL EMPEZADOS  --> 
+
+              <!-- START MODAL empezados -->
+              <div v-if="modalPendientes">
+                <div id="myModal" class="modal">
+                    <div class="modal-content px-0 py-0">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="">
+                                Usuarios Pendientes
+                            </h5>
+                            <svg xmlns="http://www.w3.org/2000/svg" @click="modalPendientes = false" width="30" height="30" fill="currentColor" class="bi closeModal bi-x-circle-fill" viewBox="0 0 16 16">
+                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
+                            </svg>
+                        </div>
+                    
+                        <div class="modal-body">
+                            <div class="contenedorLoading" v-if="buscandoPendientes">
+                                <div class="loading">
+                                    <div class="spinner-border" role="status">
+                                        <span class="sr-only"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" v-else>
+                                <div class="col-sm-12 mt-3">
+                                    <div class="row" v-if="pendientes.length != 0">
+                                        <div class="col-sm-12 mt-3">
+                                            <span v-for="pendiente in pendientes" class="itemEmpezados">
+                                                {{pendiente.dni}} - {{pendiente.nombre}} {{pendiente.apellido}} <br>
+                                            </span>
+                                        </div>
+                                    </div>  
+                                    <div class="row" v-else>
+                                        <div class="col-sm-12 mt-3">
+                                            No hay resultados para mostrar
+                                            
+                                        </div>
+                                    </div>  
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="!buscando">
+                            <div class="modal-footer d-flex justify-content-center">
+                                <button type="button" class="botonCancelar" @click="modalPendientes = false" id="" data-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>    
+            </div>    
+            <!-- END MODAL EMPEZADOS  --> 
         
             <!-- START NOTIFICACION -->
             <div role="alert" id="mitoast" aria-live="assertive" @mouseover="ocultarToast" aria-atomic="true" class="toast">
@@ -848,7 +913,9 @@
                 modalEdicion: false,
                 modalReseteo: false,
                 modalEmpezados: false,
+                modalPendientes: false,
                 buscandoEmpezados: false,
+                buscandoPendientes: false,
                 busqueda: "default",
                 dniBusqueda: null,
                 usuarios: [],
@@ -922,7 +989,8 @@
                 observando: false,
                 avance: null,
                 mostrarAvance: false,
-                empezados: []
+                empezados: [],
+                pendientes: []
             },
             mounted () {
                 this.pantalla = localStorage.getItem("pantalla");
@@ -953,7 +1021,6 @@
 
                     axios.post("funciones/asignados.php?accion=getEmpezados", formdata)
                     .then(function(response){  
-                        console.log(response.data);
                         if (response.data.error) {
                             app.mostrarToast("Error", response.data.mensaje);
                         } else {
@@ -966,6 +1033,32 @@
                         app.buscandoEmpezados = false;
                     }).catch( error => {
                         app.buscandoEmpezados = false;
+                        app.exportando = false;
+                        app.mostrarToast("Error", "Hubo en error al recuperar la información");
+                    });
+                    
+                },
+                getSinHacer () {
+                    this.modalPendientes = true;
+                    this.buscandoPendientes = true;
+                    let formdata = new FormData();
+                    formdata.append("idVoluntario", this.idVoluntario);
+                    console.log(this.idVoluntario);
+                    axios.post("funciones/asignados.php?accion=getSinHacer", formdata)
+                    .then(function(response){  
+                        console.log(response)
+                        if (response.data.error) {
+                            app.mostrarToast("Error", response.data.mensaje);
+                        } else {
+                            if (response.data.pendientes != false) {
+                                app.pendientes = response.data.pendientes
+                            } else {
+                                app.pendientes = [];
+                            }
+                        }
+                        app.buscandoPendientes = false;
+                    }).catch( error => {
+                        app.buscandoPendientes = false;
                         app.exportando = false;
                         app.mostrarToast("Error", "Hubo en error al recuperar la información");
                     });

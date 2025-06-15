@@ -1,16 +1,16 @@
 <?php
 class ApptivaDB {
-    // private $host = "localhost";
-    // private $usuario = "root";
-    // private $clave = "";
-    // private $db = "postulaciones";
-    // public $conexion;
-
     private $host = "localhost";
-    private $usuario = "postulaciones";
-    private $clave = 'z$c6D4g07';
+    private $usuario = "root";
+    private $clave = "";
     private $db = "postulaciones";
     public $conexion;
+
+    // private $host = "localhost";
+    // private $usuario = "postulaciones";
+    // private $clave = 'z$c6D4g07';
+    // private $db = "postulaciones";
+    // public $conexion;
     
     public function __construct(){
         $this->conexion = new mysqli($this->host, $this->usuario, $this->clave, $this->db)

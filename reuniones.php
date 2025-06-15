@@ -58,14 +58,13 @@
             </div>
             <div class="row">
             <table class="table table-bordered">
-
                 <thead>
                     <tr>
-                        <div :class="mes == 'julio' ? 'remarcado' : ''" class="col-6 opcionMes" @click="mes='julio'">
-                            JULIO
-                        </div>
-                        <div :class="mes == 'agosto' ? 'remarcado' : ''" class="col-6 opcionMes" @click="mes='agosto'">
-                            AGOSTO
+                        <div v-for="opcion in meses" :key="opcion" 
+                            :class="mes === opcion ? 'remarcado' : ''" 
+                            class="col-3 opcionMes" 
+                            @click="mes = opcion">
+                        {{ opcion.toUpperCase() }}
                         </div>
                     </tr>
                     <tr>
@@ -78,651 +77,26 @@
                         <th>Domingo</th>
                     </tr>
                 </thead>
-                <tbody id="tBody" v-if="mes == 'julio'">
-                    <tr>
-                        <th class="celdaDia" id="2024-07-01">
-                            1
-                            <div v-for="reunion in reuniones['2024-07-01']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-07-02">
-                            2
-                            <div v-for="reunion in reuniones['2024-07-02']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-07-03">
-                            3
-                            <div v-for="reunion in reuniones['2024-07-03']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-07-04">
-                            4
-                            <div v-for="reunion in reuniones['2024-07-04']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-07-05">
-                            5
-                            <div v-for="reunion in reuniones['2024-07-05']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-07-06">
-                            6
-                            <div v-for="reunion in reuniones['2024-07-06']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-07-07">
-                            7
-                            <div v-for="reunion in reuniones['2024-07-07']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th class="celdaDia" id="2024-07-08">
-                            8
-                            <div v-for="reunion in reuniones['2024-07-08']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-07-09">
-                            9
-                            <div v-for="reunion in reuniones['2024-07-09']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-07-10">
-                            10
-                            <div v-for="reunion in reuniones['2024-07-10']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-07-11">
-                            11
-                            <div v-for="reunion in reuniones['2024-07-11']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-07-12">
-                            12
-                            <div v-for="reunion in reuniones['2024-07-12']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-07-13">
-                            13
-                            <div v-for="reunion in reuniones['2024-07-13']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-07-14">
-                            14
-                            <div v-for="reunion in reuniones['2024-07-14']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th class="celdaDia" id="2024-07-15">
-                            15
-                            <div v-for="reunion in reuniones['2024-07-15']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-07-16">
-                            16
-                            <div v-for="reunion in reuniones['2024-07-16']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-07-17">
-                            17
-                            <div v-for="reunion in reuniones['2024-07-17']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-07-18">
-                            18
-                            <div v-for="reunion in reuniones['2024-07-18']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-07-19">
-                            19
-                            <div v-for="reunion in reuniones['2024-07-19']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-07-20">
-                            20
-                            <div v-for="reunion in reuniones['2024-07-20']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-07-21">
-                            21
-                            <div v-for="reunion in reuniones['2024-07-21']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th class="celdaDia" id="2024-07-22">
-                            22
-                            <div v-for="reunion in reuniones['2024-07-22']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-07-23">
-                            23
-                            <div v-for="reunion in reuniones['2024-07-23']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-07-24">
-                            24
-                            <div v-for="reunion in reuniones['2024-07-24']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-07-25">
-                            25
-                            <div v-for="reunion in reuniones['2024-07-25']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-07-26">
-                            26
-                            <div v-for="reunion in reuniones['2024-07-26']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-07-27">
-                            27
-                            <div v-for="reunion in reuniones['2024-07-27']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-07-28">
-                            28
-                            <div v-for="reunion in reuniones['2024-07-28']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th class="celdaDia" id="2024-07-29">
-                            29
-                            <div v-for="reunion in reuniones['2024-07-29']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-07-30">
-                            30
-                            <div v-for="reunion in reuniones['2024-07-30']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-07-31">
-                            31
-                            <div v-for="reunion in reuniones['2024-07-31']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" ></th>
-                        <th class="celdaDia" ></th>
-                        <th class="celdaDia"></th>
-                        <th class="celdaDia"></th>
-                    </tr>
-                    <!-- Aquí irán las filas con los días y eventos programados -->
+
+                <tbody>
+                <tr v-for="(semana, index) in semanasMes" :key="index">
+                    <td v-for="dia in semana" :key="dia?.fecha" class="celdaDia" :id="dia?.fecha">
+                    <div v-if="dia">
+                        {{ dia.numero }}
+                        <div v-for="reunion in reuniones[dia.fecha]" :key="reunion.id">
+                        <button class="btnReunion"
+                                :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'"
+                                @click="clickReunion(reunion)">
+                            {{ reunion.fecha.split(' ')[1].slice(0,5) }} hs<br>
+                            {{ reunion.voluntario }}
+                        </button>
+                        </div>
+                    </div>
+                    </td>
+                </tr>
                 </tbody>
 
-                <tbody id="tBody" v-if="mes == 'agosto'">
-                    <tr>
-                        <th class="celdaDia"></th>
-                        <th class="celdaDia"></th>
-                        <th class="celdaDia"></th>
-                        <th class="celdaDia" id="2024-08-01">
-                            1
-                            <div v-for="reunion in reuniones['2024-08-01']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-08-02">
-                            2
-                            <div v-for="reunion in reuniones['2024-08-02']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-08-03">
-                            3
-                            <div v-for="reunion in reuniones['2024-08-03']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-08-04">
-                            4
-                            <div v-for="reunion in reuniones['2024-08-04']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th class="celdaDia" id="2024-08-05">
-                            5
-                            <div v-for="reunion in reuniones['2024-08-05']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-08-06">
-                            6
-                            <div v-for="reunion in reuniones['2024-08-06']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-08-07">
-                            7
-                            <div v-for="reunion in reuniones['2024-08-07']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-08-08">
-                            8
-                            <div v-for="reunion in reuniones['2024-08-08']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-08-09">
-                            9
-                            <div v-for="reunion in reuniones['2024-08-09']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-08-10">
-                            10
-                            <div v-for="reunion in reuniones['2024-08-10']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-08-11">
-                            11
-                            <div v-for="reunion in reuniones['2024-08-11']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th class="celdaDia" id="2024-08-12">
-                            12
-                            <div v-for="reunion in reuniones['2024-08-12']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-08-13">
-                            13
-                            <div v-for="reunion in reuniones['2024-08-13']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-08-14">
-                            14
-                            <div v-for="reunion in reuniones['2024-08-14']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-08-15">
-                            15
-                            <div v-for="reunion in reuniones['2024-08-15']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-08-16">
-                            16
-                            <div v-for="reunion in reuniones['2024-08-16']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-08-17">
-                            17
-                            <div v-for="reunion in reuniones['2024-08-17']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-08-18">
-                            18
-                            <div v-for="reunion in reuniones['2024-08-18']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th class="celdaDia" id="2024-08-19">
-                            19
-                            <div v-for="reunion in reuniones['2024-08-19']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-08-20">
-                            20
-                            <div v-for="reunion in reuniones['2024-08-20']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-08-21">
-                            21
-                            <div v-for="reunion in reuniones['2024-08-21']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-08-22">
-                            22
-                            <div v-for="reunion in reuniones['2024-08-22']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-08-23">
-                            23
-                            <div v-for="reunion in reuniones['2024-08-23']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-08-24">
-                            24
-                            <div v-for="reunion in reuniones['2024-08-24']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-08-25">
-                            25
-                            <div v-for="reunion in reuniones['2024-08-25']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th class="celdaDia" id="2024-08-26">
-                            26
-                            <div v-for="reunion in reuniones['2024-08-26']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-08-27">
-                            27
-                            <div v-for="reunion in reuniones['2024-08-27']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-08-28">
-                            28
-                            <div v-for="reunion in reuniones['2024-08-28']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-08-29">
-                            29
-                            <div v-for="reunion in reuniones['2024-08-29']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" id="2024-08-30">
-                            30
-                            <div v-for="reunion in reuniones['2024-08-30']">
-                                <button class="btnReunion" :class="reunion.disponible == 1 ? 'disponible' : 'noDisponible'" @click="clickReunion(reunion)">
-                                    {{reunion.fecha.split(" ")[1].split(":")[0] }}:{{reunion.fecha.split(" ")[1].split(":")[1] }} hs
-                                    <br>
-                                    {{reunion.voluntario}}
-                                </button>
-                            </div>
-                        </th>
-                        <th class="celdaDia" ></th>
-                        <th class="celdaDia" ></th>
-                    </tr>
-                </tbody>
+                
             </table>
             </div>
 
@@ -933,17 +307,19 @@
                 creandoReunion: false,
                 reuniones: null,
                 whatsappLink: null,
+                edicion: false,
                 mes: null,
-                edicion: false
+                anio: null,
+                meses: ['junio', 'julio', 'agosto', 'septiembre']
             },
             mounted() {
                 this.pantalla = localStorage.getItem("pantalla");
 
                 this.idVoluntario = <?php echo json_encode($_SESSION["idUsuario"]); ?>;
-                //this.obtenerFechaActual()
                 let mes = new Date().getMonth();
-                if (mes + 1 < 7) {
-                    this.mes = "julio"
+                this.year = new Date().getFullYear();
+                if (mes + 1 == 6) {
+                    this.mes = "junio"
                 }
                 if (mes + 1 == 7) {
                     this.mes = "julio"
@@ -951,7 +327,38 @@
                 if (mes + 1 == 8) {
                     this.mes = "agosto"
                 }
+                if (mes + 1 == 9) {
+                    this.mes = "septiembre"
+                }
                 this.getReuniones();
+            },
+            computed: {
+                semanasMes() {
+                    const mesesMap = { enero: 0, febrero: 1, marzo: 2, abril: 3, mayo: 4, junio: 5, julio: 6, agosto: 7, septiembre: 8, octubre: 9, noviembre: 10, diciembre: 11 };
+                    const mesIndex = mesesMap[this.mes];
+                    const primerDia = new Date(new Date().getFullYear(), mesIndex, 1);
+                    const diasEnMes = new Date(new Date().getFullYear(), mesIndex + 1, 0).getDate();
+
+                    let semanas = [];
+                    let semana = new Array(7).fill(null);
+                    let diaSemana = (primerDia.getDay() + 6) % 7; // convertir Domingo=0 a 6, Lunes=1 a 0, etc.
+
+                    for (let dia = 1; dia <= diasEnMes; dia++) {
+                        const fechaStr = `${new Date().getFullYear()}-${String(mesIndex + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+                        semana[diaSemana] = { numero: dia, fecha: fechaStr };
+
+                        diaSemana++;
+                        if (diaSemana === 7) {
+                            semanas.push(semana);
+                            semana = new Array(7).fill(null);
+                            diaSemana = 0;
+                        }
+                    }
+
+                    if (semana.some(d => d !== null)) semanas.push(semana); // agregar última semana incompleta
+
+                    return semanas;
+                }
             },
             methods:{
                 clickReunion (reunion) {

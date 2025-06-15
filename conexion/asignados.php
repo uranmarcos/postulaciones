@@ -221,6 +221,67 @@ class ApptivaDB {
         }
     }
 
+    public function getSinHacer($id) {
+        // try {
+        //     $resultado = $this->conexion->query("SELECT u.dni, u.nombre, u.apellido
+        //         FROM usuarios u
+        //         LEFT JOIN seguimiento s ON u.id = s.idUsuario
+        //         WHERE u.asignado = '$id'
+        //         AND (s.idUsuario IS NULL OR s.estado1 = 0) AND u.anio = YEAR(CURDATE());") or die();
+
+        //     $resultado = $resultado->fetch_all(MYSQLI_ASSOC);
+            
+        //     // return $resultado;
+        //     $filas = array();
+        //     while ($fila = $resultado->fetch_assoc()) {
+        //         $filas[] = $fila;
+        //     }
+        //     return $filas;
+        // } catch (\Throwable $th) {
+        //     return false;
+        // }
+        try {
+            // Preparar la consulta SQL con parámetros
+            $sql = "SELECT u.dni, u.nombre, u.apellido
+                    FROM usuarios u
+                    LEFT JOIN seguimiento s ON u.id = s.idUsuario
+                    WHERE u.asignado = ?
+                    AND (s.idUsuario IS NULL OR s.estado1 = 0)
+                    AND u.anio = YEAR(CURDATE())";
+            
+            // Preparar la consulta
+            $stmt = $this->conexion->prepare($sql);
+            
+            // Vincular el parámetro
+            $stmt->bind_param('i', $id);
+            
+            // Ejecutar la consulta
+            $stmt->execute();
+            
+            // Obtener el resultado
+            $resultado = $stmt->get_result();
+            
+            // Inicializar un array para almacenar los resultados
+            $filas = array();
+            
+            // Recuperar las filas del resultado
+            while ($fila = $resultado->fetch_assoc()) {
+                $filas[] = $fila;
+            }
+            
+            // Cerrar la declaración
+            $stmt->close();
+            
+            // Devolver los resultados
+            return $filas;
+            
+        } catch (\Throwable $th) {
+            // Manejo de errores
+            error_log('Error: ' . $th->getMessage());
+            return false;
+        }
+    }
+
     // public function calcularAsignados($filtro, $inicio, $cantidad) {
     //     $anio = date("Y");
     //     try {

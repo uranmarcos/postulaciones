@@ -20,7 +20,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-   
+    
     <script src="https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js"></script>
     <link href="css/general.css" rel="stylesheet"> 
     <link href="css/notificacion.css" rel="stylesheet"> 
@@ -58,53 +58,139 @@
 
                 <!-- START AVANCE -->
                 <div class="row d-flex justify-content-between px-0 mb-3 rowAvance" v-if="mostrarResumen">
-                    <div class="col-12 col-md-2 px-0 resumen total">
+                    
+                    <div class="col-4 col-md-2 px-0 resumen total">
+                        <span class="labelBuscar px-3"> TOTAL</span>
+                        {{resumen.total}}   
+                    </div>
+                
+                    <!-- <div class="col-12 col-md-2 px-0 resumen total">
                         TOTAL: {{resumen.total}}
+                    </div> -->
+
+                    <div class="col-4 col-md-2 px-0 resumen terminados">
+                        <span class="labelBuscar green px-3"> 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi mx-2 green bi-check-circle-fill" viewBox="0 0 16 16">
+                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                            </svg>
+                            TERMINADOS
+                        </span>
+                        {{resumen.terminados}}   
                     </div>
-                    <div class="col-12 col-md-2 px-0 resumen terminados">
+
+                    <!-- <div class="col-12 col-md-2 px-0 resumen terminados">
                         {{resumen.terminados}} {{resumen.terminados == 1 ? 'terminado' : 'terminados'}}
+                    </div> -->
+                    <div class="col-4 col-md-2 px-0 resumen empezados">
+                        <span class="labelBuscar orange px-3"> 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi mx-2 naranja bi-arrow-clockwise" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                                <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                            </svg>
+                            EMPEZADOS
+                        </span>
+                        {{resumen.empezados - resumen.extrasEmpezados}}
                     </div>
-                    <div class="col-12 col-md-2 px-0 resumen empezados">
+
+                    <!-- <div class="col-12 col-md-2 px-0 resumen empezados">
                         {{resumen.empezados}} {{resumen.empezados == 1 ? 'empezado' : 'empezados'}}
+                    </div> -->
+                    <div class="col-4 col-md-2 px-0 resumen pendientes">
+                        <span class="labelBuscar grey px-3"> 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi mx-2 bi-clock-fill grey" viewBox="0 0 16 16">
+                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                            </svg>  
+                            PENDIENTES
+                        </span>
+                        {{parseInt(resumen.total) - (parseInt(resumen.terminados) + parseInt(resumen.empezados) + (parseInt(resumen.extrasTotal) - parseInt(resumen.extrasTerminados) - parseInt(resumen.extrasEmpezados)))}} 
                     </div>
-                    <div class="col-12 col-md-2 px-0 resumen pendientes">
+
+                    <div class="col-4 col-md-2 px-0 resumen baja">
+                        <span class="labelBuscar red px-3"> BAJA</span>
+                        {{parseInt(resumen.extrasTotal) - parseInt(resumen.extrasTerminados)}} 
+                    </div>
+
+                    
+                    <!-- <div class="col-12 col-md-2 px-0 resumen pendientes">
                         {{parseInt(resumen.total) - (parseInt(resumen.terminados) + parseInt(resumen.empezados))}} sin hacer
-                    </div>
-                    <div class="col-12 col-md-1 px-0 resumen cerrar" @click="mostrarResumen = false">
+                    </div> -->
+                    
+                    <div class="col-4 col-md-1 px-0 resumen cerrar" @click="mostrarResumen = false">
                         x
                     </div>
                 </div>
                 <!-- START AVANCE -->
 
-
-                <div class="card" v-for="usuario in usuarios">
-                    <div class="card-body py-0 mt-3">
-                        <h5 class="card-title">{{usuario.voluntario}}</h5>
+                <div class="row d-flex justify-content-around px-0 mb-3">
+                    <div class="card px-0" v-for="usuario in usuarios">
+                        <div class="card-body py-2 px-2 pb-0">
+                            <h5 class="card-title">{{usuario.voluntario}}</h5>
+                        </div>
+                        
+                        <div class="card-body py-0">
+                            <span class="principal">
+                                {{usuario.terminados}} / {{usuario.asignados}}
+                            </span>     
+                        </div>
+                        <!-- <ul class="list-group list-group-flush">
+                            <li class="list-group-item"> 
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi green bi-check-circle-fill" viewBox="0 0 16 16">
+                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                                </svg>
+                                {{usuario.terminados}} terminados</li>
+                            <li class="list-group-item"> 
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi naranja bi-arrow-clockwise" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                                </svg>
+                                {{usuario.empezados}} empezados</li>
+                            <li class="list-group-item">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock-fill rojo" viewBox="0 0 16 16">
+                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                                </svg>   
+                                {{(parseInt(usuario.asignados) - parseInt(usuario.terminados) - parseInt(usuario.empezados)) }} sin hacer</li>
+                        </ul> -->
+                        <div class="row">
+                            <span class="col-4 visorCantidad"> 
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi green bi-check-circle-fill" viewBox="0 0 16 16">
+                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                                </svg>
+                                <br>
+                                {{usuario.terminados}}
+                            </span>    
+                            <span class="col-4 visorCantidad"> 
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi naranja bi-arrow-clockwise" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                                </svg>
+                                <br>
+                                {{usuario.empezados}}
+                            </span>    
+                            <span class="col-4 visorCantidad"> 
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock-fill grey" viewBox="0 0 16 16">
+                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                                </svg>   
+                                <br>
+                                {{(parseInt(usuario.asignados) - parseInt(usuario.terminados) - parseInt(usuario.empezados)) }}
+                            </span>    
+                        </div>
                     </div>
-                    
-                    <div class="card-body px-0">
-                        <span class="principal">
-                            {{usuario.terminados}} / {{usuario.asignados}}
-                        </span>     
+                    <div class="card px-0" style="min-height:180px">
+                        <div class="card-body py-2 px-2 pb-0">
+                            <h5 class="card-title">USUARIOS CON ERROR</h5>
+                        </div>
+                        
+                        <div class="card-body py-0">
+                            <span class="principal">
+                                {{conError}}
+                            </span>     
+                        </div>
+                        <div class="row" v-if="conError > 0">
+                            <button class="btnGeneral" @click="corregirUsuarios">
+                                CORREGIR
+                            </button>     
+                        </div>
                     </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item"> 
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi green bi-check-circle-fill" viewBox="0 0 16 16">
-                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-                            </svg>
-                            {{usuario.terminados}} terminados</li>
-                        <li class="list-group-item"> 
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi naranja bi-arrow-clockwise" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
-                                <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
-                            </svg>
-                            {{usuario.empezados}} empezados</li>
-                        <li class="list-group-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock-fill rojo" viewBox="0 0 16 16">
-                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
-                            </svg>   
-                            {{(parseInt(usuario.asignados) - parseInt(usuario.terminados) - parseInt(usuario.empezados)) }} sin hacer</li>
-                    </ul>
                 </div>
             </div>
             <!-- START MODAL -->
@@ -113,11 +199,10 @@
                     <div class="modal-content px-0 py-0">
                         <div class="modal-header">
                             <h5 class="modal-title" id="">DESCARGAR EXCEL</h5>
-                            <svg xmlns="http://www.w3.org/2000/svg" @click="modalAsignacion = false" width="30" height="30" fill="currentColor" class="bi closeModal bi-x-circle-fill" viewBox="0 0 16 16">
+                            <svg xmlns="http://www.w3.org/2000/svg" @click="modal = false" width="30" height="30" fill="currentColor" class="bi closeModal bi-x-circle-fill" viewBox="0 0 16 16">
                                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
                             </svg>
                         </div>
-                    
                         <div class="modal-body">
                             <div class="row">  
                                 <div class="col-sm-12 mt-3">
@@ -183,7 +268,25 @@
             .rowAvance{
             background-color: lightgray;
         }
+        .card-title{
+            margin: 0;
+            padding: 4px;
+        }
+        .visorCantidad{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .btnGeneral {
+            color: green;
+            boder: solid 1px green;
+            font-weight: bolder;
+            background: white;
+        }
         .resumen {
+            position: relative;
+            padding: 0;
             border: solid 1px grey;
             border-radius: 5px;
             background: white;
@@ -203,13 +306,29 @@
             color: green;
             border: solid 1px green;
         }
+        .green {
+            color: green;
+        }
         .pendientes{
+            color: grey;
+            border: solid 1px grey;
+        }
+        .orange {
+            color: orange;
+        }
+        .empezados{
             color: orange;
             border: solid 1px orange;
         }
-        .empezados{
+        .baja{
+            color: red;
+            border: solid 1px red;
+        }
+        .red {
+            color: red;
+        }
+        .gris {
             color: grey;
-            border: solid 1px grey;
         }
         .cerrar{
             color: rgb(238, 100, 100);
@@ -228,7 +347,8 @@
             font-size: 17px;
             font-weight: bolder;
             justify-content: center;
-            background: #B3B4B6;
+            background: #white;
+            border: solid 1px black;
             align-items: center;
             text-align: center;
             margin:0px auto;
@@ -269,6 +389,7 @@
                 }
                 this.getVoluntariosActivos();
                 this.getResumen();
+                this.consultarConError();
             },
             data: {
                 pantalla: null,
@@ -284,14 +405,14 @@
                 modal: false,
                 descargando: false,
                 mostrarResumen: false,
-                resumen: null
+                resumen: null,
+                conError: null
             },
             methods:{
                 getVoluntariosActivos () {
                     this.buscando = true;
                     axios.post("funciones/avance.php?accion=consultarVoluntarios")
                     .then(function(response){  
-                        console.log(response.data);
                         if (response.data.error) {
                             app.mostrarToast("Error", response.data.mensaje);
                         } else {
@@ -352,14 +473,19 @@
                     XLSX.utils.book_append_sheet(libro, hoja, 'Sheet1');
 
                     // Guardar el libro como archivo Excel
-                    const nombreArchivo = 'usuarios.xlsx';
+                    let nombreArchivo = null;
+                    if (this.descarga.asignado == 'todos') {
+                        nombreArchivo = 'usuarios.xlsx';
+                    } else {
+                        let usuario = this.usuarios.find(element => element.id == this.descarga.asignado)
+                        nombreArchivo = usuario.voluntario.trim() + '.xlsx';
+                    }
                     XLSX.writeFile(libro, nombreArchivo);
                 },
                
                 getResumen () {
                     axios.post("funciones/avance.php?accion=getResumen")
                     .then(function(response){  
-                        console.log(response.data);
                         if (response.data.error) {
                             app.mostrarToast("Error", response.data.mensaje);
                         } else {
@@ -368,6 +494,27 @@
                                 app.mostrarResumen = true;
                             }
                         }
+                    }).catch( error => {
+                        app.mostrarToast("Error", "No se pudo recuperar la información");
+                    });
+                },
+                consultarConError () {
+                    axios.post("funciones/avance.php?accion=consultarConError")
+                    .then(function(response){  
+                        console.log(response.data);
+                        if (!response.data.error) {
+                            app.conError = response.data.resumen[0].total
+                        } 
+                    }).catch( error => {
+                        app.mostrarToast("Error", "No se pudo recuperar la información");
+                    });
+                },
+                corregirUsuarios () {
+                    axios.post("funciones/avance.php?accion=corregirUsuarios")
+                    .then(function(response){  
+                        app.getVoluntariosActivos();
+                        app.getResumen();
+                        app.consultarConError();
                     }).catch( error => {
                         app.mostrarToast("Error", "No se pudo recuperar la información");
                     });

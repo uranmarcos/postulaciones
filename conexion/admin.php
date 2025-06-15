@@ -37,12 +37,7 @@ class ApptivaDB {
         try {
             $resultado = $this->conexion->query("SELECT * FROM usuarios U
             WHERE U.dni LIKE '$dni%' ORDER BY U.dni") or die();
-            // return $resultado->fetch_all(MYSQLI_ASSOC);
-            $filas = array();
-            while ($fila = $resultado->fetch_assoc()) {
-                $filas[] = $fila;
-            }
-            return $filas;
+            return $resultado->fetch_all(MYSQLI_ASSOC);
         } catch (\Throwable $th) {
             return false;
         }
@@ -54,12 +49,7 @@ class ApptivaDB {
             INNER JOIN seguimiento s 
             ON u.id = s.idUsuario
             WHERE raven <> '-' AND anio = 2023") or die();
-            // return $resultado->fetch_all(MYSQLI_ASSOC);
-            $filas = array();
-            while ($fila = $resultado->fetch_assoc()) {
-                $filas[] = $fila;
-            }
-            return $filas;
+            return $resultado->fetch_all(MYSQLI_ASSOC);
         } catch (\Throwable $th) {
             return false;
         }
@@ -88,13 +78,8 @@ class ApptivaDB {
     public function hayRegistro($dni) {
         try {
             $resultado = $this->conexion->query("SELECT * FROM usuarios WHERE dni = '$dni'") or die();
-            // $resultado = $resultado->fetch_all(MYSQLI_ASSOC);
-            $filas = array();
-            while ($fila = $resultado->fetch_assoc()) {
-                $filas[] = $fila;
-            }
-            // return $filas;
-            $numero = count($filas);
+            $resultado = $resultado->fetch_all(MYSQLI_ASSOC);
+            $numero = count($resultado);
             return $numero;
         } catch (\Throwable $th) {
             return false;
@@ -125,12 +110,7 @@ class ApptivaDB {
     public function verRespuestas($id) {
         try {
             $resultado = $this->conexion->query("SELECT * FROM `seguimiento` WHERE idUsuario = '$id'") or die();
-            // return $resultado->fetch_all(MYSQLI_ASSOC);
-            $filas = array();
-            while ($fila = $resultado->fetch_assoc()) {
-                $filas[] = $fila;
-            }
-            return $filas;
+            return $resultado->fetch_all(MYSQLI_ASSOC);
         } catch (\Throwable $th) {
             return false;
         }

@@ -59,6 +59,38 @@
             } 
 
         break;
+
+        case 'consultarConError':          
+            $u = $user -> consultarConError();
+
+            if ($u || $u == []) { 
+                $res["resumen"] = $u;
+                $res["mensaje"] = "La consulta se realizó correctamente";
+                $user -> close();
+            } else {
+                $res["usuarios"] = [];
+                $res["mensaje"] = "Hubo un error al recuperar la información.";
+                $res["error"] = true;
+                $user -> close();
+            } 
+
+        break;
+
+        case 'corregirUsuarios':
+            $u = $user -> corregirUsuarios();
+
+            if ($u || $u == []) { 
+                $res["usuarios"] = $u;
+                $res["mensaje"] = "OK";
+                $user -> close();
+            } else {
+                $res["usuarios"] = $u;
+                $res["mensaje"] = "Hubo un error.Intentá nuevamente.";
+                $res["error"] = true;
+                $user -> close();
+            } 
+
+        break;
     }
 
     echo json_encode($res);

@@ -212,6 +212,23 @@
             } 
 
         break;
+
+        case 'getSinHacer':
+            $idVoluntario = $_POST["idVoluntario"];
+
+            $u = $user -> getSinHacer($idVoluntario);
+            if ($u || $u == []) { 
+                $res["pendientes"] = $u;
+                $res["mensaje"] = "OK";
+                $user -> close();
+            } else {
+                $res["u"] = $u;
+                $res["mensaje"] = "Hubo un error al recuperar la información";
+                $res["error"] = true;
+                $user -> close();
+            } 
+
+        break;
     }
 
     echo json_encode($res);
