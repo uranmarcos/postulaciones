@@ -1,0 +1,299 @@
+/* HEADER */
+    .header {
+        border-bottom: solid 1px  rgb(124, 69, 153);
+        display: flex;
+        height: 10vh;
+        padding: 0 50px;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .imgHeader:hover{
+        cursor: pointer;
+    }
+    .btnLogOut{
+        background-color:rgb(124, 69, 153);
+        border: none;
+    }
+    .white{
+        color: white
+    }
+    img {
+        height: 9vh;
+    }
+    .avatar {
+        min-width: 250px;
+        width: auto;
+        height: 7vh;
+        border-bottom: solid 1px rgb(124, 69, 153);
+        border-radius: 5px;
+        color: rgb(124, 69, 153);
+        font-size: 14px;
+    }
+    .rowAvatar{
+        height: 100%;
+        width: auto;padding: 10px;;
+        display: flex;
+        align-items: center;
+    }
+    .nombre-usuario {
+        display: inline-block;
+    }
+
+/*  HEADER */
+
+
+
+.boton{
+    background-color: white;
+    color: rgb(124, 69, 153);
+    padding: 5px 10px;
+    border: solid 1px rgb(124, 69, 153);
+    box-shadow: none;
+    border-radius: 5px;
+    width: auto;
+}
+.boton:hover{
+    background-color: rgb(124, 69, 153);;
+    color: white;
+    border: solid 1px rgb(124, 69, 153);
+    box-shadow: none;
+}
+.botonCancelar{
+    background-color: white;
+    color: rgb(238, 100, 100);
+    padding: 5px 10px;
+    border: solid 1px rgb(238, 100, 100); 
+    box-shadow: none;
+    border-radius: 5px;
+    width: auto;
+}
+.botonCancelar:hover{
+    background-color: rgb(238, 100, 100);
+    color: white;
+    border: solid 1px rgb(238, 100, 100);   
+    box-shadow: none;
+}
+
+table{
+    border: solid 1px rgb(124, 69, 153);
+    border-radius: 5px;
+    width: 100% !important;
+}
+.sinResultados{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 10px 20px;
+    text-align: center;
+}
+.contenedorTabla{
+    color: rgb(124, 69, 153);
+    border: solid 1px rgb(124, 69, 153);
+    border-radius: 10px;
+    padding: 10xp;
+    margin-top: 24px;
+    width: 100%;
+}   
+.selectUsuarios{
+    position: relative;
+    padding: 0;
+}
+.labelUsuarios{
+    position: absolute;
+    top: -8px;
+    left: 10px;
+    font-size: 12px !important;
+    background-color: white;
+    color:rgb(124, 69, 153);
+}
+
+
+
+
+/* BUSCADOR  */
+.selectBuscar{
+    position: relative;
+    padding: 0;
+    max-width: 250px;
+}
+.labelBuscar{
+    position: absolute;
+    top: -8px;
+    left: 10px;
+    font-size: 12px !important;
+    background-color: white;
+    color:rgb(124, 69, 153);
+}
+.navBusqueda{
+    background-color: rgb(245, 244, 244);
+    padding: 5px 0px;
+}
+/*
+.selectBuscar:active{
+    outline: none;
+    box-shadow: none;
+ }
+ .selectBuscar:focus{
+    outline: none;
+    box-shadow: none;
+ }
+.inputBuscar:active{
+   outline: none;
+   box-shadow: none;
+}
+.inputBuscar:focus{
+    outline: none;
+    box-shadow: none;
+ } */
+ 
+/* BUSCADOR  */
+
+
+/* TABLA   */
+    th,td{
+        text-align: center !important;
+    }
+    table{
+        font-size: 14px !important
+    }
+/* TABLA   */
+
+
+
+
+.contenedor{
+    width: 100% !important;
+    padding: 0 50px
+}
+
+
+/* BREADCRUMB */
+.grey{
+    color: grey
+}
+.breadcrumb{
+    color: rgb(124, 69, 153);
+    font-size:1em;
+    padding:0 !important; 
+    margin-top: 20px;
+    text-transform: uppercase;
+    border-bottom: solid 1px rgb(124, 69, 153);
+}
+.pointer{
+    cursor: pointer;
+}
+
+/* END BREADCRUMB */
+
+
+
+
+
+
+/* ESTILOS LOADING */
+    .contenedorLoading {
+        color: rgb(124, 69, 153);
+        border: solid 1px rgb(124, 69, 153);
+        border-radius: 10px;
+        padding: 10xp;
+        margin-top: 24px;
+        width: 100%;
+        height: 200px;
+    }
+    .contenedorLoadingModal {
+        color: rgb(124, 69, 153);
+        border-radius: 10px;
+        padding: 10xp;
+        width: 100%;
+        height: 50px;
+
+    }
+    .loading {
+        width: 100%;
+        height: 100% !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: rgb(124, 69, 153);
+    }
+/* ESTILOS LOADING */
+
+
+/* PAGINACIO */
+.paginacion{
+    color: grey;
+    font-size: 14px;
+}
+.btnPaginacion{
+    border: none;
+    background: white;
+    color: #7C4599;
+}    
+.selectCantidad{
+    position: relative;
+    padding: 0;
+}
+.labelCantidad{
+    position: absolute;
+    top: -8px;
+    left: 10px;
+    font-size: 12px !important;
+    background-color: white;
+    color:rgb(124, 69, 153);
+}
+
+
+/* PAGINACION */
+
+
+/* MODAL  */
+.modal-header {
+    background: rgb(124, 69, 153);
+    color: white;
+}
+.close{
+    background:white;
+    border: none;
+    outline: none;
+}
+.closeModal{
+    color: white;
+    cursor: pointer;
+}
+.row{
+    width: 100%;
+    margin:auto;
+}
+/*  ESTILOS MODAL   */
+    .tituloModal{
+        color: rgb(124, 69, 153);
+    }
+    /* The Modal (background) */
+    .modal {
+        display: block;
+        /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content/Box */
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto; /* 15% from the top and centered */
+        padding: 20px;
+        border: 1px solid #888;
+        width: 40%; /* Could be more or less, depending on screen size */
+    }
+    label{
+        COLOR: rgb(90, 89, 89);
+        
+    }
+/*  ESTILOS MODAL   */
