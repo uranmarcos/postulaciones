@@ -48,6 +48,7 @@ session_start();
                             $_SESSION["rol"] = $u[0]["rol"];
                             $_SESSION["dni"] = $u[0]["dni"];
                             $_SESSION["idUsuario"] = $u[0]["id"];
+                            $_SESSION["telefono"] = $u[0]["telefono"];
                         }
                     }
                 }  

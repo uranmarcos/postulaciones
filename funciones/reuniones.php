@@ -95,57 +95,40 @@
 
         break;
 
+        case 'eliminarReunion': 
+            $id = $_POST["idReunion"];    
+            $u = $user -> eliminarReunion($id);
+            if ($u) {
+                $res["error"] = false;
+                $res["mensaje"] = "La reunión se eliminó correctamente";
+                $user -> close();
+            } else {
+                $res["mensaje"] = "No se pudo eliminar la reunión. Intente nuevamente";
+                $res["error"] = true;
+                $user -> close();
+            } 
+        break;
+
+         case 'actualizarTelefono': 
+            $idUsuario = $_POST["idUsuario"];
+            $telefono = $_POST["telefono"];
+               
+            $u = $user -> actualizarTelefono($idUsuario, $telefono);
+            if ($u) {
+                $res["error"] = false;
+                $_SESSION["telefono"] = $telefono;
+                $res["mensaje"] = "El teléfono se actualizó correctamente";
+                $user -> close();
+            } else {
+                $res["mensaje"] = "No se pudo actualizar el teléfono. Intente nuevamente";
+                $res["error"] = true;
+                $user -> close();
+            } 
+
+        break;
 
 
-        // case 'consultarVoluntarios':
-        //     $u = $user -> consultarVoluntarios();
-
-        //     if ($u || $u == []) { 
-        //         $res["usuarios"] = $u;
-        //         $res["mensaje"] = "La consulta se realizó correctamente";
-        //         $user -> close();
-        //     } else {
-        //         $res["usuarios"] = $u;
-        //         $res["mensaje"] = "Hubo un error al recuperar la información. Por favor recargue la página.";
-        //         $res["error"] = true;
-        //         $user -> close();
-        //     } 
-
-        // break;
-
-        // case 'consultarDescarga':
-        //     $estado = $_POST["estado"];
-        //     $asignado = $_POST["asignado"];
-            
-        //     $u = $user -> consultarDescarga($estado, $asignado);
-
-        //     if ($u || $u == []) { 
-        //         $res["resultado"] = $u;
-        //         $res["mensaje"] = "La consulta se realizó correctamente";
-        //         $user -> close();
-        //     } else {
-        //         $res["mensaje"] = "Hubo un error al recuperar la información.";
-        //         $res["error"] = true;
-        //         $user -> close();
-        //     } 
-
-        // break;
-
-        // case 'getResumen':          
-        //     $u = $user -> getResumen();
-
-        //     if ($u || $u == []) { 
-        //         $res["resumen"] = $u;
-        //         $res["mensaje"] = "La consulta se realizó correctamente";
-        //         $user -> close();
-        //     } else {
-        //         $res["usuarios"] = [];
-        //         $res["mensaje"] = "Hubo un error al recuperar la información.";
-        //         $res["error"] = true;
-        //         $user -> close();
-        //     } 
-
-        // break;
+        
     }
 
     echo json_encode($res);

@@ -41,20 +41,20 @@
             <!-- END BREADCRUMB -->
 
             <div class="row d-flex justify-content-between mb-3">
-                <div class="col-12 col-md-4 px-0">
-                    <div class="row d-flex" :class="pantalla == 'usuarios' ? 'justify-content-around' : 'justify-content-left'">
-                        
-        
-                        <button 
-                            type="button" 
-                            @click="modalReunion = true"  
-                            class="btn"
-                               
-                        >
-                            NUEVA REUNIÓN
-                        </button>
-                    </div>
-                </div>
+                <button 
+                    type="button" 
+                    @click="modalReunion = true"  
+                    class="btn"                               
+                >
+                    NUEVA REUNIÓN
+                </button>
+                <button 
+                    type="button" 
+                    @click="modalTelefono = true"  
+                    class="btn mi-boton"                               
+                >
+                    Tel: {{telefono}}
+                </button>
             </div>
             <div class="row">
             <table class="table table-bordered">
@@ -100,8 +100,8 @@
             </table>
             </div>
 
-            <!-- START MODAL HABILITAR TESTS-->
-             <div v-if="modalReunion">
+            <!-- START MODAL REUNION-->
+            <div v-if="modalReunion">
                 <div id="myModal" class="modal">
                     <div class="modal-content px-0 py-0">
                         <div class="modal-header">
@@ -113,7 +113,7 @@
                     
                         <div class="modal-body pb-0">
                             <div class="row mb-3 d-flex justify-content-around"> 
-                                <div class="col-5">
+                                <div class="col-5 pl-0">
                                     Fecha 
                                     <input class="form-control" type="datetime-local" v-model="reunion.fecha" />  
                                 </div>  
@@ -124,7 +124,7 @@
                                         <option value="0">No</option>
                                     </select>
                                 </div>
-                                <div class="col-3">
+                                <div class="col-3 pr-0">
                                     Capacidad
                                     <input class="form-control" type="number" min="1" v-model="reunion.capacidad">
                                 </div>
@@ -132,9 +132,14 @@
                            
                             <div >
                                 <div class="modal-footer d-flex justify-content-between">
-                                    <button type="button" class="btnModal btnCancelar" @click="cerrarModalReunion()">Cancelar</button>
-                                    <button type="button" @click="confirmarReunion" class="btnModal" v-if="!edicion">Crear</button>
-                                    <button type="button" @click="confirmarEdicion" class="btnModal" v-if="edicion">Editar</button>
+                                    <div class="d-flex justify-start col-6 mx-0">
+                                        <button type="button" class="btnModal btnCancelar" @click="cerrarModalReunion()">Cancelar</button>
+                                    </div>
+                                    <div class="d-flex justify-content-end col-6 mx-0">
+                                        <button type="button" @click="confirmarReunion" class="btnModal" v-if="!edicion">Crear</button>
+                                        <button type="button" @click="confirmarDelete" class="btnModal btnEliminar" v-if="edicion">Eliminar</button>
+                                        <button type="button" @click="confirmarEdicion" class="btnModal" v-if="edicion">Editar</button>
+                                    </div>
                                 </div>
                             </div>
                             <!-- <div v-if="habilitandoTests">
@@ -153,7 +158,56 @@
                     
                 </div>    
             </div>    
-            <!-- END MODAL HABILITAR TESTS -->
+            <!-- END MODAL REUNION -->
+
+            <!-- START MODAL TELEFONO-->
+            <div v-if="modalTelefono">
+                <div id="myModal" class="modal">
+                    <div class="modal-content px-0 py-0">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="">ACTUALIZAR TELÉFONO</h5>
+                            <svg xmlns="http://www.w3.org/2000/svg" @click="modalTelefono = false, telefonoActualizado = null" width="30" height="30" fill="currentColor" class="bi closeModal bi-x-circle-fill" viewBox="0 0 16 16">
+                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
+                            </svg>
+                        </div>
+                    
+                        <div class="modal-body pb-0">
+                            <div class="form-group">
+                                <label for="telefono">Teléfono celular (Ingrese característica sin 0 y teléfono sin 15)</label>
+                                <input
+                                    id="telefono"
+                                    class="form-control"
+                                    type="tel"
+                                    v-model="telefonoActualizado"
+                                    placeholder="Ej: 11 12345678"
+                                    pattern="[0-9 ]{10,15}"
+                                    @input="formatearTelefono"
+                                />
+                            </div>
+                           
+                            <div >
+                                <div class="modal-footer d-flex justify-content-between px-0">
+                                    <div class="d-flex justify-start col-6 mx-0">
+                                        <button type="button" class="btnModal btnCancelar" @click="modalTelefono = false, telefonoActualizado = null">Cancelar</button>
+                                    </div>
+                                    <div class="d-flex justify-content-end col-6 mx-0">
+                                        <button 
+                                            type="button" 
+                                            @click="actualizarTelefono" 
+                                            class="btnModal"
+                                            :disabled="!telefonoActualizado || telefonoActualizado && telefonoActualizado.length < 10"                                        
+                                        >
+                                            Actualizar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>    
+            </div>    
+            <!-- END MODAL TELEFONO -->
 
          
 
@@ -240,7 +294,7 @@
         .btnEliminar {
             color: rgb(238, 100, 100);
             border: solid 1px rgb(238, 100, 100); 
-            width: 100%;
+            margin-right: 10px;            
         }
         th {
             text-transform: uppercase;
@@ -268,6 +322,13 @@
         }
         .modal-content{
             width: 650px !important;
+        }
+        .mwidth100 {
+            width: 100px !important;
+            margin-right: 10px;
+        }
+        .mwidth400{
+            width: 400px !important;
         }
     </style>
     <script>
@@ -310,12 +371,16 @@
                 edicion: false,
                 mes: null,
                 anio: null,
-                meses: ['junio', 'julio', 'agosto', 'septiembre']
+                meses: ['junio', 'julio', 'agosto', 'septiembre'],
+                telefono: null,
+                modalTelefono: false,
+                telefonoActualizado: null
             },
             mounted() {
                 this.pantalla = localStorage.getItem("pantalla");
 
                 this.idVoluntario = <?php echo json_encode($_SESSION["idUsuario"]); ?>;
+                this.telefono = <?php echo json_encode($_SESSION["telefono"]); ?>;
                 let mes = new Date().getMonth();
                 this.year = new Date().getFullYear();
                 if (mes + 1 == 6) {
@@ -404,7 +469,6 @@
                 },
                 confirmarReunion (){
                     let ahora = new Date();
-                    // if (app.reunion.fecha)
                     if (app.reunion.fecha == null) {
                         app.mostrarToast("ERROR", "Seleccione una fecha");
                         return;
@@ -440,9 +504,27 @@
                         app.mostrarToast("Error", "No se pudo crear el usuario");
                     })
                 },
+                confirmarDelete () {                
+                    let formdata = new FormData();
+                    formdata.append("idReunion", app.reunion.id);
+                    axios.post("funciones/reuniones.php?accion=eliminarReunion", formdata)
+                    .then(function(response){
+                        if (response.data.error) {
+                            app.mostrarToast("Error", response.data.mensaje);
+                        } else {
+                            // app.pedirConfirmacion = false;
+                            app.modalReunion = false;
+                            app.edicion = false;
+                            app.mostrarToast("Éxito", response.data.mensaje);
+                            app.getReuniones();
+                            app.resetReunion();
+                        }
+                    }).catch( error => {
+                        app.mostrarToast("Error", "No se pudo eliminar la reunión");
+                    })              
+                },
                 confirmarEdicion (){
                     let ahora = new Date();
-                    // if (app.reunion.fecha)
                     if (app.reunion.fecha == null) {
                         app.mostrarToast("ERROR", "Seleccione una fecha");
                         return;
@@ -472,8 +554,46 @@
                             app.resetReunion();
                         }
                     }).catch( error => {
-                        app.mostrarToast("Error", "No se pudo crear el usuario");
+                        app.mostrarToast("Error", "No se pudo editar la reunión");
                     })
+                },
+                formatearTelefono(e) {
+                    let soloNumeros = e.target.value.replace(/\D/g, '');
+
+                    // Limitar a 10 dígitos
+                    this.telefonoActualizado = soloNumeros.slice(0, 10);
+                },
+                actualizarTelefono (){                         
+                    let formdata = new FormData();
+                    formdata.append("idUsuario", app.idVoluntario);
+                    formdata.append("telefono", app.telefonoActualizado);
+                    // axios.post("funciones/reuniones.php?accion=actualizarTelefono", formdata)
+                    // .then(function(response){
+                    //     if (response.data.error) {
+                    //         app.mostrarToast("Error", response.data.mensaje);
+                    //     } else {
+                    //         app.telefono = app.telefonoActualizado;
+                    //         app.modalTelefono = false;
+                    //         app.telefonoActualizado = null;
+                    //         app.mostrarToast("Éxito", response.data.mensaje);
+                    //     }
+                    // }).catch( error => {
+                    //     app.mostrarToast("Error", "No se pudo editar la reunión");
+                    // })
+                    axios.post("funciones/reuniones.php?accion=actualizarTelefono", formdata)
+                    .then((response) => {
+                        if (response.data.error) {
+                        this.mostrarToast("Error", response.data.mensaje);
+                        } else {
+                        this.telefono = this.telefonoActualizado;
+                        this.modalTelefono = false;
+                        this.telefonoActualizado = null;
+                        this.mostrarToast("Éxito", response.data.mensaje);
+                        }
+                    })
+                    .catch(() => {
+                        this.mostrarToast("Error", "No se pudo editar la reunión");
+                    });
                 },
                 resetReunion () {
                     this.reunion = {
