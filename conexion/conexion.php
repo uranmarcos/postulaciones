@@ -18,14 +18,40 @@ class ApptivaDB {
         $this->conexion->set_charset("utf8");
     }
 
-    public function login($usuario, $password) {
+    public function login($usuario) {
         try {
-            $resultado = $this->conexion->query("SELECT * FROM usuarios WHERE dni = '$usuario'") or die();
-            $data = $resultado -> fetch_all(MYSQLI_ASSOC);
-            return $data;
-        } catch (\Throwable $th) {
-            return false;
+        $anio_actual = date('Y');
+
+        $stmt = $this->conexion->prepare("SELECT * FROM usuarios WHERE dni = ?");
+        $stmt->bind_param("s", $usuario);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+
+        if (!$resultado || $resultado->num_rows === 0) {
+            return [];  // array vacío si no hay resultados
         }
+
+        $usuarios = $resultado->fetch_all(MYSQLI_ASSOC);
+
+        // Buscar registro que no sea postulante
+        foreach ($usuarios as $registro) {
+            if ($registro['rol'] !== 'postulante') {
+                return [$registro];  // lo devuelvo dentro de un array
+            }
+        }
+
+        // Si todos son postulantes, buscar del año actual
+        foreach ($usuarios as $registro) {
+            if ($registro['rol'] === 'postulante' && $registro['anio'] == $anio_actual) {
+                return [$registro];  // también dentro de un array
+            }
+        }
+
+        return [];  // si no encontró nada, devuelvo array vacío
+
+    } catch (\Throwable $th) {
+        return [];  // en caso de error devuelvo array vacío también
+    }
     }
 
     public function close() {

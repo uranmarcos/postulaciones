@@ -45,82 +45,96 @@
                 
                 <div class="col-12 px-0">
                     <div class="row d-flex justify-content-between align-items-center">
-                        
-                        <div class="col-12 col-sm-6 col-md-4 my-1 px-0">    
-                            <div class="selectBuscar">
-                                <span class="labelBuscar"> Agregar al seguimiento...</span>
-                                    
-                                <select class="form-control selectAgregar"  @change="agregarUsuario(usuarioSelect)" v-model="usuarioSelect">
-                                    <option value="default" disabled>Seleccionar de mis asignados</option>
-                                    <option v-for="opcion in asignados" :disabled="desabilitarOpcion(opcion.id)" v-bind:value="opcion">{{opcion.dni + " - " + opcion.nombre + " " + opcion.apellido}}</option>
-                                </select>
-                            </div>
-                        </div>
 
-                        <div class="col-12 col-sm-6 col-md-4 my-1 contenedorDni px-0 px-md-1 d-flex justify-content-end justify-content-md-center">
-                            <div class="selectBuscar" v-click-outside="handleClickOutside">
-                                <span class="labelBuscar">Agregar por dni</span>
-                                <input 
-                                    class="form-control inputBuscar" 
-                                    autocomplete="off" 
-                                    @keyUp="buscarUsuario"
-                                    v-model="dniBusqueda"
-                                    ref="inputField"                                
-                                >
-                            </div>
-                            <ul class="list-group listadoDnis" ref="listadoDnis">
-                                <li 
-                                    class="list-group-item" 
-                                    :style="{ pointerEvents: permitirUsuarioBuscado(usuario) ? 'none' : 'auto' }"
-                                    :class="permitirUsuarioBuscado(usuario) ? 'itemListadoDniBloqueado' : 'itemListadoDni' "
-                                    v-for="(usuario, index) in usuariosBuscados"
-                                    @click="agregarUsuario(usuario)"
-                                >
-                                    {{usuario.nombre}} {{usuario.apellido}} <span class="textoRojo" v-if="permitirUsuarioBuscado(usuario)">(agregado)</span>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div class="col-12 col-sm-6 col-md-4 px-0 d-flex justify-content-end">
-                            <button type="button" class="boton botonTerminar" @click="modalTerminar = true" v-if="usuarios.length != 0">
-                                TERMINAR SEGUIMIENTO
+                        <div class="col-12 col-md-4 my-2 px-0">
+                            <button 
+                                type="button" 
+                                class="boton botonTerminar" 
+                                @click="modalAgregar = true" 
+                            >
+                                AGREGAR AL SEGUIMIENTO
                             </button>
                         </div>
 
-                        <div v-if="usuarios.length != 0" class="col-12 col-sm-6 col-md-4 my-1 mt-3 px-0 campoActualizacion">
-                            <div class="row">
-                                <div class="selectBuscar selectActualizacion">
-                                    <span class="labelBuscar"> Última actualizacion</span>
-                                    <input class="form-control campoActualizacion" disabled :value="ultimaActualizacion" id="dni">
-                                </div>
-                                <div class="refresh" @click="actualizar">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-                                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
-                                        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div v-if="usuarios.length != 0" class="col-12 col-sm-6 col-md-4 my-1 mt-3 d-flex justify-content-center">
+                        <div v-if="usuarios.length != 0" class="col-12 col-sm-6 col-md-4 d-flex justify-content-center">
                             <div class="selectBuscar">
-                                <span class="labelBuscar"> Filtrar por nombre/apellido</span>
+                                <span class="labelBuscar"> Ordenar por nombre/apellido</span>
                                 <input class="form-control" autocomplete="off" v-model="filtro" @keyUp="ordenarPorNombreApellido(filtro)">
                             </div>
                         </div>
-                      
-                        <div v-if="usuarios.length != 0" class="col-12 col-sm-6 col-md-4 mt-3 px-0 d-flex justify-content-end">
-                            <div>
+
+
+                        
+                        <div 
+                            class="col-12 col-sm-6 col-md-4 px-0 d-flex justify-content-end" 
+                            v-if="usuarios.length != 0"
+                        >
+                            <!-- CONTENEDOR DEL BOTÓN Y EL MENÚ -->
+                            <div style="position: relative; display: inline-block;">
                                 <button 
-                                    class="boton botonActualizar" 
+                                    type="button" 
+                                    class="boton botonTerminar" 
+                                    @click="mostrarOpciones = !mostrarOpciones"
+                                >
+                                    SEGUIMIENTO
+                                </button>
+
+                                <!-- MENÚ DESPLEGABLE -->
+                                <div 
+                                    v-if="mostrarOpciones" 
+                                    style="position: absolute; top: 100%; right: 0; z-index: 10;"
+                                >
+                                    <button class="boton botonTerminar mt-1 w-100" @click="actualizarHabilitadoGrupo(2)">Habilitar todos</button>
+                                    <button class="boton botonTerminar mt-1 w-100" @click="actualizarHabilitadoGrupo(1)">Bloquear todos</button>
+                                    <!-- <button class="boton botonTerminar mt-1 w-100" @click="modalTerminar = true, mostrarOpciones = false">
+                                        Terminar seguimiento
+                                    </button> -->
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                        <div v-if="usuarios.length != 0" class="row px-0">
+                            <div class="col-6 px-0 d-flex actualizacion">
+                                Última actualizacion: {{ultimaActualizacion }} 
+                                <div class="refresh" @click="actualizar">
+                                    <svg 
+                                        xmlns="http://www.w3.org/2000/svg" 
+                                        width="20" height="20" fill="currentColor" 
+                                        class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
+                                        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+                                    </svg>
+                                </div>  
+                            </div>
+                            <div class="col-12 col-sm-6 px-0 d-flex justify-content-end">
+                                <span 
+                                    class="btnDespliegue" 
                                     data-toggle="collapse"
                                     data-target=".multi-collapse" 
                                     aria-expanded="false" 
                                     aria-controls="multiCollapseExample1 multiCollapseExample2"
                                     @click="desplegadas = !desplegadas"
+                                >
+                                    <span 
+                                        v-if="desplegadas"                                    
                                     >
-                                    {{desplegadas ? 'Colapsar todas' : 'Desplegar todas'}}
-                                </button>
+                                        Colapsar todas
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+                                          <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V3.707l3.147 3.147a.5.5 0 0 0 .708-.708l-4-4-.007-.007a.5.5 0 0 0-.7.007l-4 4a.5.5 0 0 0 .708.708L7.5 3.707V14.5A.5.5 0 0 0 8 15z"/>
+                                        </svg>
+                                    </span>
+                                    <span 
+                                        v-if="!desplegadas"                                    
+                                    >
+                                        Desplegar todas
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v10.793l3.147-3.147a.5.5 0 0 1 .708.708l-4 4-.007.007a.5.5 0 0 1-.7-.007l-4-4a.5.5 0 0 1 .708-.708L7.5 12.293V1.5A.5.5 0 0 1 8 1z"/>
+                                        </svg>
+                                    </span>
+                                </span>
+                                
                             </div>
                         </div>
                     </div>
@@ -137,9 +151,8 @@
                 </div>
             </div>
             <!-- END COMPONENTE LOADING BUSCANDO USUARIOS -->
-   
             <!-- START TABLA -->
-            <div v-else>
+            <div v-else>             
                 <div v-if="usuarios.length != 0">                    
                     <p>
                         <span class="accordion-header">
@@ -157,12 +170,20 @@
                                         :aria-controls="'multiCollapse' + usuario.dni"
                                     >
                                         <span 
-                                            class=" col-6 px-5" 
+                                            class=" col-8 px-3" 
                                             :class="filtro != null && filtro.trim() != '' && (usuario.nombre.toLowerCase().includes(filtro.toLowerCase()) || usuario.apellido.toLowerCase().includes(filtro.toLowerCase())) ? 'resaltado' : ''"
                                         >
-                                            {{usuario.nombre}}
+                                            <span 
+                                               
+                                                :class="usuario.habilitado == 2 ? 'green' : 'red'"
+                                            >
+                                                <b>
+                                                    {{usuario.nombre}}
+                                                </b>
+                                                    {{ usuario.habilitado == 1 ? ' - No Habilitado (puede loguearse pero no realizar act)' : ' - Habilitado'}}
+                                            </span>
                                         </span>
-                                        <span class="col-6 d-flex align-items-center px-5 justify-content-end">
+                                        <span class="col-4 d-flex align-items-center px-3 justify-content-end">
                                             <b
                                                 
                                             >
@@ -210,13 +231,7 @@
                                                         </span>
                                                         <b class="mx-2">{{usuario.dni}}</b>
                                                     </div>
-                                                    <div class="col-4 px-0 d-flex align-items-center">
-                                                        <span class="">
-                                                            Contraseña:
-                                                        </span>
-                                                        <b class="mx-2">{{usuario.pass}}</b>
-                                                    </div> 
-                                                    <div class="col-2 px-0 d-flex align-items-center">
+                                                    <div class="col-6 px-0 d-flex align-items-center">
                                                         <b>
                                                             A1: 
                                                                 {{usuario.raven}}
@@ -240,13 +255,13 @@
                                                             </button>
                                                             <ul class="dropdown-menu">
                                                                 <li>
-                                                                    <a class="dropdown-item" @click="eliminarUsuario(usuario)" href="#">
+                                                                    <a class="dropdown-item" @click="terminarSeguimientoIndividual(usuario.id)" href="#">
                                                                         Terminar seguimiento
                                                                     </a>
                                                                 </li>
-                                                                <li>
+                                                                <li v-if="usuario.habilitado > 0">
                                                                     <a class="dropdown-item" @click="resetear(usuario)" href="#">
-                                                                        Resetear Contraseña
+                                                                        {{usuario.habilitado == 1 ? 'Habilitar' : 'Bloquear'}}
                                                                     </a>
                                                                 </li>
                                                                 <li>
@@ -276,7 +291,7 @@
                                                         </span><br>
                                                         <span :class="usuario.habilitado1 == 0 ? 'bloqueo' : 'exito'">
                                                             {{
-                                                                usuario.habilitado1 == 0 ? "Bloqueado" : "Habilitado"
+                                                                usuario.habilitado1 == 0 ? "NO PERMITIDA" : "PERMITIDA"
                                                             }}
                                                         </span>
                                                     </div>
@@ -292,7 +307,7 @@
                                                         <br>
                                                         <span :class="usuario.habilitado2 == 0 ? 'bloqueo' : 'exito'">
                                                             {{
-                                                                usuario.habilitado2 == 0 ? "Bloqueado" : "Habilitado"
+                                                                usuario.habilitado2 == 0 ? "NO PERMITIDA" : "PERMITIDA"
                                                             }}
                                                         </span>
                                                     </div>
@@ -308,7 +323,7 @@
                                                         <br>
                                                         <span :class="usuario.habilitado3 == 0 ? 'bloqueo' : 'exito'">
                                                             {{
-                                                                usuario.habilitado3 == 0 ? "Bloqueado" : "Habilitado"
+                                                                usuario.habilitado3 == 0 ? "NO PERMITIDA" : "PERMITIDA"
                                                             }}
                                                         </span>
                                                     </div>
@@ -324,7 +339,7 @@
                                                         <br>
                                                         <span :class="usuario.habilitado4 == 0 ? 'bloqueo' : 'exito'">
                                                             {{
-                                                                usuario.habilitado4 == 0 ? "Bloqueado" : "Habilitado"
+                                                                usuario.habilitado4 == 0 ? "NO PERMITIDA" : "PERMITIDA"
                                                             }}
                                                         </span>
                                                     </div>
@@ -340,7 +355,7 @@
                                                         <br>
                                                         <span :class="usuario.habilitado5 == 0 ? 'bloqueo' : 'exito'">
                                                             {{
-                                                                usuario.habilitado5 == 0 ? "Bloqueado" : "Habilitado"
+                                                                usuario.habilitado5 == 0 ? "NO PERMITIDA" : "PERMITIDA"
                                                             }}
                                                         </span>
                                                     </div>
@@ -356,7 +371,7 @@
                                                         <br>
                                                         <span :class="usuario.habilitado6 == 0 ? 'bloqueo' : 'exito'">
                                                             {{
-                                                                usuario.habilitado6 == 0 ? "Bloqueado" : "Habilitado"
+                                                                usuario.habilitado6 == 0 ? "NO PERMITIDA" : "PERMITIDA"
                                                             }}
                                                         </span>
                                                     </div>
@@ -421,15 +436,91 @@
                                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
                             </svg>
                         </div>
+                        
+                        <div class="contenedorLoadingModal" v-if="limpiando">
+                            <div class="loading">
+                                <div class="spinner-border" role="status">
+                                    <span class="sr-only"></span>
+                                </div>
+                            </div>
+                        </div>
                     
-                        <div class="modal-body modalBodyEliminar">
-                            ¿Desea terminar el seguimiento?
+                        <div class="modal-body modalBodyEliminar" v-if="!limpiando">
+                            ¿Desea terminar el seguimiento de todos los usuarios?
                             
                         </div>
-                        <div>
+                        <div v-if="!limpiando">
                             <div class="modal-footer d-flex justify-content-between">
                                 <button type="button" class="botonCancelar" @click="modalTerminar = false" id="" data-dismiss="modal">Cancelar</button>
                                 <button type="button" @click="limpiarSeguimiento()"  class="boton">Confirmar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>    
+            </div>    
+            <!-- END MODAL TERMINAR SEGUIMIENTO -->
+
+              <!-- START MODAL TERMINAR SEGUIMIENTO -->
+            <div v-if="modalAgregar">
+                <div id="myModal" class="modal">
+                    <div class="modal-content px-0 py-0">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="">AGREGAR USUARIOS</h5>
+                            <svg xmlns="http://www.w3.org/2000/svg" @click="modalAgregar = false" width="30" height="30" fill="currentColor" class="bi closeModal bi-x-circle-fill" viewBox="0 0 16 16">
+                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
+                            </svg>
+                        </div>
+                    
+                        <div class="row">
+                            <!-- <button class="col-6 btnOpcion" @click="opcionSeleccionada = 'asignados'">ASIGNADOS</button> -->
+                            <button class="col-12 btnOpcion" @click="opcionSeleccionada = 'dni'">POR DNI</button>
+                        </div>
+
+                            <!-- Selección por asignados -->
+                            <div v-if="opcionSeleccionada === 'asignados'" class="mt-2">
+                                <select class="form-control selectAgregar" @change="agregarUsuario(usuarioSelect)" v-model="usuarioSelect">
+                                <option value="default" disabled>Seleccionar de mis asignados</option>
+                                <option
+                                    v-for="opcion in asignados"
+                                    :key="opcion.id"
+                                    :disabled="desabilitarOpcion(opcion.id)"
+                                    :value="opcion"
+                                >
+                                    {{ opcion.dni + ' - ' + opcion.nombre + ' ' + opcion.apellido }}
+                                </option>
+                                </select>
+                            </div>
+
+                            <!-- Búsqueda por DNI -->
+                            <div v-if="opcionSeleccionada === 'dni'" class="mt-2 position-relative">
+                                <input
+                                class="form-control inputBuscar"
+                                autocomplete="off"
+                                @keyup="buscarUsuario"
+                                v-model="dniBusqueda"
+                                ref="inputField"
+                                placeholder="Buscar por DNI"
+                                />
+                                <ul class="list-group listadoDnis position-absolute w-100 z-index-10 mt-1" ref="listadoDnis">
+                                <li
+                                    class="list-group-item"
+                                    v-for="(usuario, index) in usuariosBuscados"
+                                    :key="usuario.id"
+                                    :style="{ pointerEvents: permitirUsuarioBuscado(usuario) ? 'none' : 'auto' }"
+                                    :class="permitirUsuarioBuscado(usuario) ? 'itemListadoDniBloqueado' : 'itemListadoDni'"
+                                    @click="agregarUsuario(usuario)"
+                                >
+                                    {{ usuario.nombre }} {{ usuario.apellido }}
+                                    <span class="textoRojo" v-if="permitirUsuarioBuscado(usuario)">(agregado)</span>
+                                </li>
+                                </ul>
+                            </div>
+
+                       
+                        <div>
+                            <div class="modal-footer d-flex justify-content-center">
+                                <button type="button" class="botonCancelar" @click="modalAgregar = false" id="" data-dismiss="modal">Cerrar</button>
+                                <!-- <button type="button" @click="limpiarSeguimiento()"  class="boton">Confirmar</button> -->
                             </div>
                         </div>
                     </div>
@@ -450,7 +541,7 @@
                     
                         <div class="modal-body">
                             <div class="actualizacionModal">
-                                Información actualizada a las: {{ultimaActualizacion}}  
+                                Información actualizada a las: {{ultimaActualizacion}}
                             </div> 
                             <div class="row">
                                 <div class="col-sm-12 mt-3">
@@ -464,39 +555,13 @@
                                     Estado: 
                                     <b>{{usuarioModal.estado == 0 ? "SIN HACER" : usuarioModal.estado == 1 ? "EMPEZADO" : "TERMINADO" }}
                                         / 
-                                        {{usuarioModal.habilitado == 0 ? "BLOQUEADO" : "HABILITADO" }}
-                                        <button 
-                                            @click="actualizarTest(actividadModal, usuarioModal.id, '0')" 
-                                            class="botonBloqueo" 
-                                            v-if="usuarioModal.habilitado == 1"
-                                            :disabled="usuarioModal.estado == 2"
-                                        >
-                                            BLOQUEAR
-                                        </button>
-                                        <button 
-                                            @click="actualizarTest(actividadModal, usuarioModal.id, '1')" 
-                                            class="botonHabilitado" 
-                                            v-if="usuarioModal.habilitado == 0 && usuarioModal.estado != 2"
-                                            :disabled="usuarioModal.estado == 2"
-                                        >
-                                            HABILITAR
-                                        </button>
+                                        {{usuarioModal.habilitado == 0 ? "ACTIVIDAD NO PERMITIDA" : "ACTIVIDAD PERMITIDA" }}
                                     </b>
                                 </div>
 
                                 <div class="col-sm-12 mt-3" v-if="actividadModal == 'ACTIVIDAD 1'">
                                     Tiempo disponible: {{convertirTiempo(usuarioModal.tiempo)}} minutos
-                                    <br>
-                                    Modificar Tiempo:
-                                    <input type="number" max="45" min="1" v-model="tiempoAsignable"> 
-                                    <button 
-                                        @click="asignarTiempo(usuarioModal.id, tiempoAsignable)" 
-                                        class="botonHabilitado" 
-                                        :disabled="usuarioModal.estado == 2"
-                                        >
-                                        MODIFICAR
-                                    </button>
-                                    
+                                    <br>                                    
                                 </div>
 
                                 <div class="col-sm-12 mt-3" v-if="actividadModal == 'ACTIVIDAD 1'">
@@ -523,13 +588,13 @@
             </div>    
             <!-- END MODAL DETALLE -->
 
-            <!-- START MODAL RESETEAR CONTRASEÑA -->
+            <!-- START MODAL HABILITAR / BLOQUEAR -->
             <div v-if="modalResetear">
                 <div id="myModal" class="modal">
                     <div class="modal-content px-0 py-0">
                         <div class="modal-header">
                             <h5 class="modal-title" id="">
-                                Resetear contraseña
+                                 {{usuarioModal.habilitado == 1 ? 'Habilitar Usuario' : 'Bloquear Usuario'}}
                             </h5>
                             <svg xmlns="http://www.w3.org/2000/svg" @click="cancelarResetear()" width="30" height="30" fill="currentColor" class="bi closeModal bi-x-circle-fill" viewBox="0 0 16 16">
                                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
@@ -539,7 +604,7 @@
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-sm-12 mt-3 d-flex justify-content-center" >
-                                    ¿Desea resetear la contraseña al usuario?
+                                    ¿Desea {{usuarioModal.habilitado == 1 ? 'HABILITAR' : 'BLOQUEAR'}} al usuario?
                                 </div>
                                 <div class="col-sm-12 mt-3">
                                     <label for="nombre">Usuario</label>
@@ -554,7 +619,7 @@
                         <div v-if="!reseteando">
                             <div class="modal-footer d-flex justify-content-between">
                                 <button type="button" class="botonCancelar" @click="cancelarResetear()" id="" data-dismiss="modal">Cancelar</button>
-                                <button type="button" class="boton" @click="confirmarResetear(usuarioModal)">Confirmar</button>
+                                <button type="button" class="boton" @click="confirmarResetear(usuarioModal.habilitado)">Confirmar</button>
                             </div>
                         </div>
                         <div v-if="reseteando">
@@ -571,7 +636,7 @@
                     </div>
                 </div>    
             </div>    
-            <!-- END MODAL RESETEAR CONTRASEÑA -->      
+            <!-- START MODAL HABILITAR / BLOQUEAR -->      
             
             <!-- START MODAL OBSERVAR USUARIO -->
             <div v-if="modalObservar">
@@ -641,9 +706,14 @@
         </div>
     </div>
     <style scoped>
+        .btnOpcion {
+            height: 40px;
+            border: solid 1px #7C4599;
+            background: white;
+            color: #7C4599;
+        }
         .refresh {
             width: 40px;
-            border: solid 1px green;
             color: green;
             border-radius: 10px;
             padding: 0;
@@ -771,20 +841,17 @@
             color: rgb(124, 69, 153); 
             font-weight: bolder;
         }
-        .botonActualizar{
+        .btnDespliegue{
             color: green;
-            height: 37px;
-            min-width: 250px;
-            border: solid 1px green;
+            height: 15px;
         }
-        .botonActualizar:hover{
+        .btnDespliegue:hover{
             /* background: green;
             color: white;
             border: solid 1px ; */
             background: white;
-            border: solid 1px green;
             color: green;
-            font-weight: bolder
+            cursor: pointer;
         }
         .pointer{
             cursor: pointer;
@@ -874,9 +941,13 @@
         .modalContentDetalle{
             width: 600px;
         }
-        .campoActualizacion{
-            background-color: white !important;
-            text-align: center;
+        .actualizacion{
+            border-bottom: black;
+            font-size: 12px;
+            color: black;
+            padding-left: 0;
+            margin-bottom: 0;
+            text-align: left;
         }
         
             
@@ -905,8 +976,12 @@
             components: {
             },
             data: {
+                mostrarOpciones: false,
+                opcionSeleccionada: 'dni',
+                usuarioSelect: 'default',
                 buscandoUsuarios: false,
                 modalDetalle: false,
+                modalAgregar: false,
                 usuarioModal: {},
                 actividadModal: "",
                 idVoluntario: null,
@@ -929,7 +1004,8 @@
                 buscando: false,
                 tituloToast: null,
                 textoToast: null,
-                desplegadas: false
+                desplegadas: false,
+                limpiando: false
             },
             mounted () {
                 this.seguidos = localStorage.getItem("usuariosSeguimiento") ? JSON.parse(localStorage.getItem("usuariosSeguimiento")) : [];
@@ -1012,31 +1088,21 @@
                         this.usuariosBuscados = []
                     }
                 },
-                asignarTiempo(id, tiempo) {
+                actualizarHabilitadoGrupo (estado) {
+                    const idsSeleccionados = this.seguidos.map(u => u.id); 
                     let formdata = new FormData();
-                    formdata.append("id", id.trim());
-                    if (tiempo > 45) {
-                        tiempo = 45 * 60
-                    } else {
-                        tiempo = tiempo * 60
-                    }
-                    formdata.append("tiempo", tiempo);
-                    axios.post("funciones/seguimiento.php?accion=asignarTiempo", formdata)
-                    .then(function(response){  
-                        if (response.data.error) {
+                    formdata.append("ids", idsSeleccionados);
+                    formdata.append("estado", estado);
+                    axios.post("funciones/seguimiento.php?accion=actualizarHabilitadoGrupo", formdata)
+                    .then(function(response){
+                        app.actualizar();
+                        if (!response.data.error && response.data.mensaje != "OK") {
                             app.mostrarToast("Error", response.data.mensaje);
-                        } else {
-                            if (response.data.mensaje == "OK") {
-                                app.modalDetalle = false
-                                app.mostrarToast("Éxito", "Se asignó el tiempo correctamente. El usuario debe actualizar la página para que le tome el nevo tiempo");
-                                app.getUsuariosSeguimiento();
-                            } else {
-                                app.mostrarToast("Error", "Hubo un error. Intente nuevamente");
-                            }
                         }
+                        app.mostrarOpciones = false;
                     }).catch( error => {
-                        app.mostrarToast("Error", "Hubo un error. Intente nuevamente");
-                    });
+                        app.mostrarToast("Error", "Error al habilitar. Verifique los usuarios o reintente");
+                    });                    
                 },
                 desabilitarOpcion (id) {
                     id = id.trim();
@@ -1072,20 +1138,43 @@
                 agregarAlSeguimiento(usuario){
                     this.seguidos.push(usuario)
                     localStorage.setItem("usuariosSeguimiento", JSON.stringify(this.seguidos))
-                    // this.getUsuariosSeguimiento();
                     this.getUsuariosSeguimiento();
                     this.usuarioSelect = "default";
                 },
-                limpiarSeguimiento () {
-                    this.seguidos = [];
-                    this.usuarios = [];
-                    this.ultimaActualizacion = "-";
-                    localStorage.removeItem("usuariosSeguimiento");
-                    this.modalTerminar = false;
+                async limpiarSeguimiento () {
+                    this.limpiando = true;                 
+                    // const promesas = this.seguidos.map(element => this.terminarSeguimientoIndividual(element.id));
+                    // await Promise.all(promesas);
+                    for (const element of this.seguidos) {
+                        await this.terminarSeguimientoIndividual(element.id);
+                    }
+
+                    this.limpiando = false;
+                   
+                },
+                async terminarSeguimientoIndividual (id) {
+                    let formdata = new FormData();
+                    formdata.append("id", id);
+                    axios.post("funciones/seguimiento.php?accion=terminarSeguimiento", formdata)
+                    .then(function(response){
+                        console.log(response);
+                        
+                        if (response.data.error) {
+                            app.mostrarToast("Error", "No se pudo terminar el seguimiento del usuario");
+                        } else {
+                            app.eliminarUsuarioSeguimiento(id)
+                        }
+                    }).catch( error => {
+                        app.mostrarToast("Error", "No se pudo terminar el seguimiento del usuario");
+                    })  
                 },
                 consultarAsignados (id) {
                     let formdata = new FormData();
-                    formdata.append("id", this.idVoluntario.trim());
+                    if (typeof this.idVoluntario == 'string') {
+                        formdata.append("id", Number(this.idVoluntario.trim()));
+                    } else {
+                        formdata.append("id", this.idVoluntario);
+                    }
                     axios.post("funciones/seguimiento.php?accion=getAsignadosSeguimiento", formdata)
                     .then(function(response){  
                         if (response.data.error) {
@@ -1141,10 +1230,6 @@
                                 } else {
                                     app.usuarios.sort(app.ordenarUsuarios);
                                 }
-                                // app.usuarios.forEach(element => {
-                                //     element.isOpen = true
-                                //     console.log(element);
-                                // });
                                 app.validarEstado()
                             } else {
                                 app.mostrarToast("Error", "No se pudo recuperar todos los usuarios");
@@ -1268,100 +1353,50 @@
                     }
                     this.modalDetalle = true;
                 },
-                actualizarTest(actividad, id, estado) {
-                    let formdata = new FormData();
-                    formdata.append("id", id);
-                    if (actividad == "ACTIVIDAD 1") {
-                        formdata.append("actividad", "habilitado1");
-                    }
-                    if (actividad == "ACTIVIDAD 2") {
-                        let usuario = this.usuarios.filter(element => element.id == id)[0];
-                        if (estado == 1 && usuario.estado1 != 2) {
-                            this.mostrarToast("ERROR", "Debe terminar la actividad 1 para que se le pueda habilitar la 2")
-                            return;
-                        }
-                        formdata.append("actividad", "habilitado2");
-                    }
-                    if (actividad == "ACTIVIDAD 3") {
-                        let usuario = this.usuarios.filter(element => element.id == id)[0];
-                        if (estado == 1 && usuario.estado2 != 2) {
-                            this.mostrarToast("ERROR", "Debe terminar la actividad 2 para que se le pueda habilitar la 3")
-                            return;
-                        }
-                        formdata.append("actividad", "habilitado3");
-                    }
-                    if (actividad == "ACTIVIDAD 4") {
-                        let usuario = this.usuarios.filter(element => element.id == id)[0];
-                        if (estado == 1 && usuario.estado3 != 2) {
-                            this.mostrarToast("ERROR", "Debe terminar la actividad 3 para que se le pueda habilitar la 4")
-                            return;
-                        }
-                        formdata.append("actividad", "habilitado4");
-                    }
-                    if (actividad == "ACTIVIDAD 5") {
-                        let usuario = this.usuarios.filter(element => element.id == id)[0];
-                        if (estado == 1 && usuario.estado4 != 2) {
-                            this.mostrarToast("ERROR", "Debe terminar la actividad 4 para que se le pueda habilitar la 5")
-                            return;
-                        }
-                        formdata.append("actividad", "habilitado5");
-                    }
-                    if (actividad == "ACTIVIDAD 6") {
-                        let usuario = this.usuarios.filter(element => element.id == id)[0];
-                        if (estado == 1 && usuario.estado5 != 2) {
-                            this.mostrarToast("ERROR", "Debe terminar la actividad 5 para que se le pueda habilitar la 6")
-                            return;
-                        }
-                        formdata.append("actividad", "habilitado6");
-                    }
-                    
-                    formdata.append("estado", estado);
-                    axios.post("funciones/seguimiento.php?accion=actualizarTest", formdata)
-                    .then(function(response){    
-                        if (response.data.error) {
-                            app.mostrarToast("Error", response.data.mensaje);
-                        } else {
-                            app.mostrarToast("Éxito", response.data.mensaje);
-                            app.getUsuariosSeguimiento();
-                            app.modalDetalle = false;
-                        }
-                    }).catch( error => {
-                        app.mostrarToast("Error", "No se pudo recuperar todos los usuarios");
-                    });
-                },
 
-                // FUNCIONES RESETEAR CONTRASEÑA
+                // FUNCIONES RESETEAR USUARIO
                     resetear (usuario) {
                         this.modalResetear = true;
                         this.usuarioModal.id = usuario.id;
                         this.usuarioModal.dni = usuario.dni;
+                        this.usuarioModal.habilitado = usuario.habilitado;
                         this.usuarioModal.nombre = usuario.nombre + ' ' + usuario.apellido ;
                     },
                     cancelarResetear () {
                         this.modalResetear = false;
                         this.usuarioModal = {};
                     },
-                    confirmarResetear (usuario) {
+                    confirmarResetear (habilitado) {
                         this.reseteando = true;
                         let formdata = new FormData();
-                        formdata.append("idUsuario", usuario.id);                    
-                        axios.post("funciones/usuarios.php?accion=resetear", formdata)
+                    
+                        if (habilitado == 0) {
+                            return app.mostrarToast("Error", "No tiene permisos para modificar el estado del usuario");
+                        }
+                        formdata.append("idUsuario", app.usuarioModal.id);
+                        if (habilitado == 1) {
+                            formdata.append("habilitado", 2);
+                        }
+                        if (habilitado == 2) {
+                            formdata.append("habilitado", 1);
+                        }
+                        axios.post("funciones/asignados.php?accion=actualizarHabilitado", formdata)
                         .then(function(response){
                             if (response.data.error) {
                                 app.mostrarToast("Error", response.data.mensaje);
                             } else {
                                 app.modalResetear = false;
                                 app.mostrarToast("Éxito", response.data.mensaje);
-                                app.getUsuariosSeguimiento();
+                                app.actualizar();
                                 app.usuarioModal = {};
                             }
                             app.reseteando = false;
                         }).catch( error => {
                             app.reseteando = false;
-                            app.mostrarToast("Error", "No se pudo resetar la contraseña");
+                            app.mostrarToast("Error", "No se modificar el usuario");
                         })
                     },
-                // FUNCIONES RESETEAR CONTRASEÑA
+                // FUNCIONES RESETEAR USUARIO
 
                 // FUNCIONES OBSERVAR USUARIO
                     observar (usuario) {

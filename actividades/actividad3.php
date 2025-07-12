@@ -448,6 +448,12 @@
     </div>
 
     <style scoped>
+        body {
+            user-select: none;           /* Estándar */
+            -webkit-user-select: none;   /* Safari */
+            -moz-user-select: none;      /* Firefox */
+            -ms-user-select: none;       /* IE/Edge */
+        }
         .opcion{
             width: 900px;
         }
@@ -490,7 +496,9 @@
             mounted () {
                 this.idPostulante = <?php echo json_encode($_SESSION["idUsuario"]); ?>;
                 this.consultarActividad();
-                // this.comenzarActividad();
+                document.addEventListener('contextmenu', function (e) {
+                    e.preventDefault();
+                });
             },
             methods:{
                 comenzarActividad () {

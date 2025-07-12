@@ -229,6 +229,24 @@
             } 
 
         break;
+
+        case 'actualizarHabilitado':
+            $idUsuario = $_POST["idUsuario"];
+            $habilitado = $_POST["habilitado"];
+
+            $u = $user -> actualizarHabilitado($idUsuario, $habilitado);
+            if ($u || $u == []) { 
+                $res["usuarios"] = $u;
+                $res["mensaje"] = "El usuario modificó correctamente";
+                $user -> close();
+            } else {
+                $res["u"] = $u;
+                $res["mensaje"] = "No se pudo modificar el usuario";
+                $res["error"] = true;
+                $user -> close();
+            } 
+
+        break;
     }
 
     echo json_encode($res);

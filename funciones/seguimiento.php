@@ -146,14 +146,6 @@
                 $res["mensaje"] = "La consulta se realizó correctamente";
 
                 $user -> close();
-                //$u = $user->getEstadoPostulante($id);
-
-                // Verificar si la operación falló
-                // if ($u === false) {
-                //     echo "La conexión se cerró correctamente.";
-                // } else {
-                //     echo "La conexión sigue abierta.";
-                // }
             } else {
                 $res["u"] = $u;
                 $res["mensaje"] = "Hubo un error al recuperar la información. Actualice la página";
@@ -161,7 +153,58 @@
                 $user -> close();
             } 
         break;
+
+        case 'estaHabilitado':
+            $id = $_POST["idUsuario"];
+            $u = $user -> estaHabilitado($id);
+            if ($u || $u == []) { 
+                $res["estado"] = $u[0]["habilitado"];
+                $res["mensaje"] = "La consulta se realizó correctamente";
+
+                $user -> close();
+            } else {
+                $res["u"] = $u;
+                $res["mensaje"] = "Hubo un error al recuperar la información. Actualice la página";
+                $res["error"] = true;
+                $user -> close();
+            } 
+        break;
+
+        case 'actualizarHabilitadoGrupo':
+            $ids = $_POST["ids"];
+            $estado = $_POST["estado"];
+        
+           
+            $u = $user -> actualizarHabilitadoGrupo($ids, $estado);
+
+            if ($u) { 
+                $res["error"] = false;
+                $res["mensaje"] = $u;
+                $user -> close();
+            } else {                
+                $res["mensaje"] = "Error al actualizar. Verifique los usuarios";
+                $res["error"] = true;
+                $user -> close();
+            } 
+        break;
+
+        case 'terminarSeguimiento':
+            $id = $_POST["id"];
+            $u = $user -> terminarSeguimiento($id);
+
+            if ($u) { 
+                $res["error"] = false;
+                $res["mensaje"] = "OK";
+                $user -> close();
+            } else {                
+                $res["mensaje"] = "Error al terminar el seguimiento";
+                $res["error"] = true;
+                $user -> close();
+            } 
+        break;
+    
     }
+
 
     echo json_encode($res);
 ?>

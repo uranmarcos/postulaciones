@@ -77,19 +77,16 @@ class ApptivaDB {
 
     public function insertarUsuario($datos) {
         try {
-            // $resultado = $this->conexion->query("INSERT INTO usuarios VALUES(null, $datos)") or die();
-            // return true;
-            
             $sql = "INSERT INTO usuarios (nombre, apellido, dni, pass, mail, rol, anio, provincia, telefono, asignado, observacion, raven, ct, habilitado, fechaTerminado) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-            // Preparar la sentencia
             $stmt = $this->conexion->prepare($sql);
 
             if ($stmt === false) {
                 throw new Exception($this->conexion->error);
             }
             $null = null;
+            $idAsignado = 3180;
             // Vincular los parámetros a la sentencia preparada
             $stmt->bind_param(
                 'sssssssssssssss', 
@@ -102,7 +99,7 @@ class ApptivaDB {
                 $datos['anio'], 
                 $datos['provincia'], 
                 $datos['telefono'], 
-                $datos['asignado'], 
+                $idAsignado, 
                 $null, 
                 $datos['test'], 
                 $datos['test'], 
@@ -113,32 +110,15 @@ class ApptivaDB {
                 return true;
             } else {
                 return false;
-                // throw new Exception($stmt->error);
             }
         } catch (\Throwable $th) {
-            // return $th;
             return false;
         }
     }
 
-    // public function hayRegistro($condicion) {
-    //     try {
-    //         $resultado = $this->conexion->query("SELECT * FROM usuarios WHERE $condicion") or die();
-    //         $resultado = $resultado->fetch_all(MYSQLI_ASSOC);
-    //         $numero = count($resultado);
-    //         return $numero;
-    //     } catch (\Throwable $th) {
-    //         return false;
-    //     }
-    // }
-
     public function hayRegistro($condicion) {
         try {
-            // $resultado = $this->conexion->query("SELECT * FROM usuarios WHERE $condicion") or die();
             $resultado = $this->conexion->query("SELECT ct, raven, anio FROM usuarios WHERE $condicion") or die();
-            // $resultado = $resultado->fetch_all(MYSQLI_ASSOC);
-            // // $numero = count($resultado);
-            // return $resultado;
             return $resultado->fetch_all(MYSQLI_ASSOC);
         } catch (\Throwable $th) {
             return false;
@@ -204,7 +184,28 @@ class ApptivaDB {
         }
     }
 
+      public function validarDniAnio($dni) {
+        try {
+            $anioActual = date('Y');
+            $sql = "SELECT 1 FROM usuarios WHERE dni = ? AND anio = ? LIMIT 1";
 
+            $stmt = $this->conexion->prepare($sql);
+            if (!$stmt) {
+                return null; // error al preparar
+            }
+
+            $stmt->bind_param("si", $dni, $anioActual);
+            if (!$stmt->execute()) {
+                return null; // error al ejecutar
+            }
+
+            $stmt->store_result();
+
+            return $stmt->num_rows > 0; // true o false (existe o no)
+        } catch (\Throwable $th) {
+            return null; // error inesperado
+        }
+    }
 }
 
 ?>

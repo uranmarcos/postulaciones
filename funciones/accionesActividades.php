@@ -166,15 +166,33 @@ session_start();
 
             $u = $user -> estaHabilitado($id, $actividad);
             if ($u) {
-                if ($u[0]["habilitado"] == 1) {
+                // if ($u[0]["habilitado"] == 1) {
+                //     $u = $user -> actualizarRaven($id, $respuestas, $nivel, $tiempo);
+                //     if ($u || $u == []) { 
+                //         $res["resultado"] = $u;
+                //         $res["mensaje"] = "La consulta se realizó correctamente";
+                //         $user -> close();
+                //     } else {
+                //         $res["u"] = $u;
+                //         $res["mensaje"] = "Hubo un error al recuperar la información. Actualice la página";
+                //         $res["error"] = true;
+                //         $user -> close();
+                //     } 
+                // } else {
+                //     $res["mensaje"] = "USUARIO BLOQUEADO";
+                //     $res["error"] = false;
+                //     $user -> close();
+                // }
+                if ($u == "OK") {
                     $u = $user -> actualizarRaven($id, $respuestas, $nivel, $tiempo);
+                    // $u = $user -> actualizarActividad($id, $actividad, $respuestas);
                     if ($u || $u == []) { 
                         $res["resultado"] = $u;
-                        $res["mensaje"] = "La consulta se realizó correctamente";
+                        $res["mensaje"] = "OK";
                         $user -> close();
                     } else {
                         $res["u"] = $u;
-                        $res["mensaje"] = "Hubo un error al recuperar la información. Actualice la página";
+                        $res["mensaje"] = "Hubo un error al actualizar la información";
                         $res["error"] = true;
                         $user -> close();
                     } 
@@ -184,23 +202,6 @@ session_start();
                     $user -> close();
                 }
             }
-
-            // $id = $_POST["id"];
-            // $respuestas = $_POST["respuestas"];
-            // $nivel = $_POST["nivel"];
-            // $tiempo = $_POST["tiempo"];
-
-            // $u = $user -> actualizarRaven($id, $respuestas, $nivel, $tiempo);
-            // if ($u || $u == []) { 
-            //     $res["resultado"] = $u;
-            //     $res["mensaje"] = "La consulta se realizó correctamente";
-            //     $user -> close();
-            // } else {
-            //     $res["u"] = $u;
-            //     $res["mensaje"] = "Hubo un error al recuperar la información. Actualice la página";
-            //     $res["error"] = true;
-            //     $user -> close();
-            // } 
         break;
         case 'consultarActividad':
             $id = $_POST["id"];
@@ -241,7 +242,24 @@ session_start();
 
             $u = $user -> estaHabilitado($id, $actividad);
             if ($u) {
-                if ($u[0]["habilitado"] == 1) {
+                // if ($u[0]["habilitado"] == 1) {
+                //     $u = $user -> actualizarActividad($id, $actividad, $respuestas);
+                //     if ($u || $u == []) { 
+                //         $res["resultado"] = $u;
+                //         $res["mensaje"] = "OK";
+                //         $user -> close();
+                //     } else {
+                //         $res["u"] = $u;
+                //         $res["mensaje"] = "Hubo un error al actualizar la información";
+                //         $res["error"] = true;
+                //         $user -> close();
+                //     } 
+                // } else {
+                //     $res["mensaje"] = "USUARIO BLOQUEADO";
+                //     $res["error"] = false;
+                //     $user -> close();
+                // }
+                if ($u == "OK") {
                     $u = $user -> actualizarActividad($id, $actividad, $respuestas);
                     if ($u || $u == []) { 
                         $res["resultado"] = $u;

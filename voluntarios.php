@@ -102,7 +102,6 @@ if (!$_SESSION["autenticado"] || $_SESSION["rol"] == "postulante" ) {
                                 <th scope="col" >Nombre</th>
                                 <th scope="col" >Apellido</th>
                                 <th scope="col" >Dni</th>
-                                <th scope="col" >Mail</th>
                                 <th scope="col" >Rol</th>
                                 <th scope="col" >Habilitado</th>
                                 <th scope="col" ></th>
@@ -114,7 +113,6 @@ if (!$_SESSION["autenticado"] || $_SESSION["rol"] == "postulante" ) {
                                     <td >{{usuario.nombre}}</td>
                                     <td >{{usuario.apellido}}</td>
                                     <td >{{usuario.dni}}</td>
-                                    <td >{{usuario.mail}}</td>
                                     <td >{{usuario.rol}}</td>
                                     <td >{{usuario.habilitado == 1 ? "Sí" : "No"}}</td>
                                     <td >
@@ -218,10 +216,6 @@ if (!$_SESSION["autenticado"] || $_SESSION["rol"] == "postulante" ) {
                                     <input :disabled="pedirConfirmacion" class="form-control" autocomplete="off" maxlength="8" id="dni" v-model="usuario.dni">
                                 </div>
                                 <div class="col-sm-12 mt-1">
-                                    <label for="ciudad">Mail (*)</span></label>
-                                    <input :disabled="pedirConfirmacion" class="form-control" autocomplete="off" maxlength="50" id="dni" v-model="usuario.mail">
-                                </div>
-                                <div class="col-sm-12 mt-1">
                                     <label for="ciudad">ROL (*)</label>
                                     <select class="form-control" v-model="usuario.rol">
                                         <option value="voluntario" selected>Voluntario</option>
@@ -286,11 +280,7 @@ if (!$_SESSION["autenticado"] || $_SESSION["rol"] == "postulante" ) {
                                 <div class="col-sm-12 mt-1">
                                     <label for="ciudad">Apellido (*) <span class="errorLabel" v-if="errorApellido">{{errorApellido}}</span></label>
                                     <input :disabled="pedirConfirmacionEditar" class="form-control" autocomplete="off" maxlength="50" id="nombre" v-model="usuario.apellido">
-                                </div>
-                                <div class="col-sm-12 mt-1">
-                                    <label for="ciudad">Mail (*) </label>
-                                    <input :disabled="pedirConfirmacionEditar" class="form-control" autocomplete="off" maxlength="50" id="nombre" v-model="usuario.mail">
-                                </div>
+                                </div>                
                                 <div class="col-sm-12 mt-1">
                                     <label for="ciudad">ROL (*)</label>
                                     <select class="form-control" v-model="usuario.rol">
@@ -608,11 +598,10 @@ if (!$_SESSION["autenticado"] || $_SESSION["rol"] == "postulante" ) {
                     
                         formdata.append("nombre", app.usuario.nombre.trim());
                         formdata.append("apellido", app.usuario.apellido.trim());
-                        formdata.append("mail", app.usuario.mail.trim());
                         formdata.append("dni", app.usuario.dni);
                         formdata.append("rol", app.usuario.rol);
                         axios.post("funciones/accionesVoluntarios.php?accion=crearVoluntario", formdata)
-                        .then(function(response){
+                        .then(function(response){                         
                             if (response.data.error) {
                                 app.mostrarToast("Error", response.data.mensaje);
                             } else {
@@ -635,7 +624,6 @@ if (!$_SESSION["autenticado"] || $_SESSION["rol"] == "postulante" ) {
                     this.usuario.id = null;
                     this.usuario.nombre = null;
                     this.usuario.apellido = null;
-                    this.usuario.mail = null;
                     this.usuario.dni = null;
                     this.usuario.rol = null;
                 },
@@ -646,7 +634,6 @@ if (!$_SESSION["autenticado"] || $_SESSION["rol"] == "postulante" ) {
                         this.usuario.id = usuario.id;
                         this.usuario.nombre = usuario.nombre;
                         this.usuario.apellido = usuario.apellido;
-                        this.usuario.mail = usuario.mail;
                         this.usuario.dni = usuario.dni;
                         this.usuario.rol = usuario.rol;
                     },
@@ -665,7 +652,6 @@ if (!$_SESSION["autenticado"] || $_SESSION["rol"] == "postulante" ) {
                         formdata.append("id", app.usuario.id);
                         formdata.append("nombre", app.usuario.nombre);
                         formdata.append("apellido", app.usuario.apellido);
-                        formdata.append("mail", app.usuario.mail);
                         formdata.append("rol", app.usuario.rol);
 
                         axios.post("funciones/accionesVoluntarios.php?accion=editarUsuario", formdata)
@@ -703,9 +689,10 @@ if (!$_SESSION["autenticado"] || $_SESSION["rol"] == "postulante" ) {
                     confirmarResetear () {
                         this.reseteando = true;
                         let formdata = new FormData();
-                    
+                     
                         formdata.append("idUsuario", app.usuario.id);
                         formdata.append("dni", app.usuario.dni);
+                        formdata.append("nombre", app.usuario.nombre);
                     
                         axios.post("funciones/accionesVoluntarios.php?accion=resetear", formdata)
                         .then(function(response){

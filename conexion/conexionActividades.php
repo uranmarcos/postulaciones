@@ -1,16 +1,16 @@
 <?php
 class ApptivaDB {
-    // private $host = "localhost";
-    // private $usuario = "root";
-    // private $clave = "";
-    // private $db = "postulaciones";
-    // public $conexion;
-
     private $host = "localhost";
-    private $usuario = "postulaciones";
-    private $clave = 'z$c6D4g07';
+    private $usuario = "root";
+    private $clave = "";
     private $db = "postulaciones";
     public $conexion;
+
+    // private $host = "localhost";
+    // private $usuario = "postulaciones";
+    // private $clave = 'z$c6D4g07';
+    // private $db = "postulaciones";
+    // public $conexion;
     
     public function __construct(){
         $this->conexion = new mysqli($this->host, $this->usuario, $this->clave, $this->db)
@@ -119,27 +119,64 @@ class ApptivaDB {
             return false;
         }
     }
+    // public function estaHabilitado($id, $actividad) {
+    //     try {
+    //         if ($actividad == 1) {
+    //             $resultado = $this->conexion->query("SELECT habilitado1 AS 'habilitado' FROM seguimiento WHERE idUsuario = '$id'") or die();
+    //         }
+    //         if ($actividad == 2) {
+    //             $resultado = $this->conexion->query("SELECT habilitado2 AS 'habilitado' FROM seguimiento WHERE idUsuario = '$id'") or die();
+    //         }
+    //         if ($actividad == 3) {
+    //             $resultado = $this->conexion->query("SELECT habilitado3 AS 'habilitado' FROM seguimiento WHERE idUsuario = '$id'") or die();
+    //         }
+    //         if ($actividad == 4) {
+    //             $resultado = $this->conexion->query("SELECT habilitado4 AS 'habilitado' FROM seguimiento WHERE idUsuario = '$id'") or die();
+    //         }
+    //         if ($actividad == 5) {
+    //             $resultado = $this->conexion->query("SELECT habilitado5 AS 'habilitado' FROM seguimiento WHERE idUsuario = '$id'") or die();
+    //         }
+    //         if ($actividad == 6) {
+    //             $resultado = $this->conexion->query("SELECT habilitado6 AS 'habilitado' FROM seguimiento WHERE idUsuario = '$id'") or die();
+    //         }
+    //         return $resultado->fetch_all(MYSQLI_ASSOC);
+    //     } catch (\Throwable $th) {
+    //         return false;
+    //     }
+    // }
     public function estaHabilitado($id, $actividad) {
         try {
-            if ($actividad == 1) {
-                $resultado = $this->conexion->query("SELECT habilitado1 AS 'habilitado' FROM seguimiento WHERE idUsuario = '$id'") or die();
+            // Validar que la actividad sea entre 1 y 6
+            if ($actividad < 1 || $actividad > 6) {
+                return false;
             }
-            if ($actividad == 2) {
-                $resultado = $this->conexion->query("SELECT habilitado2 AS 'habilitado' FROM seguimiento WHERE idUsuario = '$id'") or die();
+
+            // Nombre del campo dinámico
+            $campo = "habilitado" . $actividad;
+
+            // Armar query
+            $query = "
+                SELECT S.$campo AS seguimientoHabilitado, U.habilitado AS usuarioHabilitado
+                FROM seguimiento S
+                JOIN usuarios U ON S.idUsuario = U.id
+                WHERE S.idUsuario = ?
+            ";
+
+            // Preparar y ejecutar consulta
+            $stmt = $this->conexion->prepare($query);
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            $resultado = $stmt->get_result();
+
+            if ($row = $resultado->fetch_assoc()) {
+                // Verificamos si ambas condiciones son verdaderas
+                if ($row['seguimientoHabilitado'] == 1 && $row['usuarioHabilitado'] == 2) {
+                    return "OK";
+                } 
+                return "BLOQUEO";
             }
-            if ($actividad == 3) {
-                $resultado = $this->conexion->query("SELECT habilitado3 AS 'habilitado' FROM seguimiento WHERE idUsuario = '$id'") or die();
-            }
-            if ($actividad == 4) {
-                $resultado = $this->conexion->query("SELECT habilitado4 AS 'habilitado' FROM seguimiento WHERE idUsuario = '$id'") or die();
-            }
-            if ($actividad == 5) {
-                $resultado = $this->conexion->query("SELECT habilitado5 AS 'habilitado' FROM seguimiento WHERE idUsuario = '$id'") or die();
-            }
-            if ($actividad == 6) {
-                $resultado = $this->conexion->query("SELECT habilitado6 AS 'habilitado' FROM seguimiento WHERE idUsuario = '$id'") or die();
-            }
-            return $resultado->fetch_all(MYSQLI_ASSOC);
+
+            return false;
         } catch (\Throwable $th) {
             return false;
         }

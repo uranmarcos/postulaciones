@@ -1,16 +1,16 @@
 <?php
 class ApptivaDB {
-    // private $host = "localhost";
-    // private $usuario = "root";
-    // private $clave = "";
-    // private $db = "postulaciones";
-    // public $conexion;
-
     private $host = "localhost";
-    private $usuario = "postulaciones";
-    private $clave = 'z$c6D4g07';
+    private $usuario = "root";
+    private $clave = "";
     private $db = "postulaciones";
     public $conexion;
+
+    // private $host = "localhost";
+    // private $usuario = "postulaciones";
+    // private $clave = 'z$c6D4g07';
+    // private $db = "postulaciones";
+    // public $conexion;
     
     public function __construct(){
         $this->conexion = new mysqli($this->host, $this->usuario, $this->clave, $this->db)
@@ -222,26 +222,7 @@ class ApptivaDB {
     }
 
     public function getSinHacer($id) {
-        // try {
-        //     $resultado = $this->conexion->query("SELECT u.dni, u.nombre, u.apellido
-        //         FROM usuarios u
-        //         LEFT JOIN seguimiento s ON u.id = s.idUsuario
-        //         WHERE u.asignado = '$id'
-        //         AND (s.idUsuario IS NULL OR s.estado1 = 0) AND u.anio = YEAR(CURDATE());") or die();
-
-        //     $resultado = $resultado->fetch_all(MYSQLI_ASSOC);
-            
-        //     // return $resultado;
-        //     $filas = array();
-        //     while ($fila = $resultado->fetch_assoc()) {
-        //         $filas[] = $fila;
-        //     }
-        //     return $filas;
-        // } catch (\Throwable $th) {
-        //     return false;
-        // }
         try {
-            // Preparar la consulta SQL con parámetros
             $sql = "SELECT u.dni, u.nombre, u.apellido
                     FROM usuarios u
                     LEFT JOIN seguimiento s ON u.id = s.idUsuario
@@ -249,30 +230,15 @@ class ApptivaDB {
                     AND (s.idUsuario IS NULL OR s.estado1 = 0)
                     AND u.anio = YEAR(CURDATE())";
             
-            // Preparar la consulta
             $stmt = $this->conexion->prepare($sql);
-            
-            // Vincular el parámetro
             $stmt->bind_param('i', $id);
-            
-            // Ejecutar la consulta
             $stmt->execute();
-            
-            // Obtener el resultado
             $resultado = $stmt->get_result();
-            
-            // Inicializar un array para almacenar los resultados
             $filas = array();
-            
-            // Recuperar las filas del resultado
             while ($fila = $resultado->fetch_assoc()) {
                 $filas[] = $fila;
             }
-            
-            // Cerrar la declaración
             $stmt->close();
-            
-            // Devolver los resultados
             return $filas;
             
         } catch (\Throwable $th) {
@@ -280,97 +246,16 @@ class ApptivaDB {
             error_log('Error: ' . $th->getMessage());
             return false;
         }
+    }   
+
+    public function actualizarHabilitado($idUsuario, $habilitado) {
+        try {
+            $resultado = $this->conexion->query("UPDATE usuarios SET habilitado = '$habilitado' WHERE id = '$idUsuario'") or die();
+            return true;
+        } catch (\Throwable $th) {
+            return false;
+        }
     }
-
-    // public function calcularAsignados($filtro, $inicio, $cantidad) {
-    //     $anio = date("Y");
-    //     try {
-    //         $resultado = $this->conexion->query("SELECT
-    //         (SELECT CONCAT('[', GROUP_CONCAT(
-    //             CONCAT(
-    //                 '{'id':', U.id,
-    //                 ','nombre':'', U.nombre,
-    //                 '','apellido':'', U.apellido,
-    //                 '','dni':', U.dni,
-    //                 ','provincia':'', U.provincia,
-    //                 '','telefono':'', U.telefono,
-    //                 '','pass':'', U.pass,
-    //                 '','observacion':'', U.observacion,
-    //                 '','raven':', U.raven,
-    //                 ','ct':'', U.ct,
-    //                 '','habilitado':', U.habilitado,
-    //                 '}'
-    //             )
-    //             SEPARATOR ','
-    //         ), ']') 
-    //         FROM usuarios U
-    //         WHERE U.anio = 2023 AND U.asignado = 3179
-    //         ORDER BY CASE WHEN U.ct = '-' THEN 0 ELSE 1 END, U.ct, U.nombre
-    //         LIMIT 10 OFFSET 1
-    //         ) AS asignados,
-        
-    //         (SELECT COUNT(*) 
-    //         FROM usuarios u
-    //         INNER JOIN seguimiento s ON u.id = s.idUsuario
-    //         WHERE u.anio = YEAR(CURDATE())
-    //         AND u.asignado = 2023
-    //         AND s.estado1 = 2
-    //         AND s.estado2 = 2
-    //         AND s.estado3 = 2
-    //         AND s.estado4 = 2
-    //         AND s.estado5 = 2
-    //         AND s.estado6 = 2
-    //         ) AS terminados,
-        
-    //         (SELECT COUNT(*) 
-    //         FROM usuarios u
-    //         INNER JOIN seguimiento s ON u.id = s.idUsuario
-    //         WHERE u.anio = YEAR(CURDATE())
-    //         AND u.asignado = 3179
-    //         AND (s.estado1 <> 0 AND s.estado1 <> 2 
-    //              OR s.estado2 <> 0 AND s.estado2 <> 2
-    //              OR s.estado3 <> 0 AND s.estado3 <> 2
-    //              OR s.estado4 <> 0 AND s.estado4 <> 2
-    //              OR s.estado5 <> 0 AND s.estado5 <> 2
-    //              OR s.estado6 <> 0 AND s.estado6 <> 2
-    //             )
-    //         ) AS empezados,
-        
-    //         (SELECT COUNT(*) 
-    //         FROM usuarios u
-    //         WHERE u.anio = YEAR(CURDATE())
-    //         AND u.asignado = 3179
-    //         ) AS total;") or die();
-    //         return $resultado->fetch_all(MYSQLI_ASSOC);
-    //     } catch (\Throwable $th) {
-    //         return false;
-    //     }
-    // }
-
-    // ("SELECT
-    //         (SELECT COUNT(*) FROM usuarios u
-    //         INNER JOIN seguimiento s ON u.id = s.idUsuario
-    //         WHERE u.anio = YEAR(CURDATE())
-    //         AND u.asignado = '$id'
-    //         AND s.estado1 = 2
-    //         AND s.estado2 = 2
-    //         AND s.estado3 = 2
-    //         AND s.estado4 = 2
-    //         AND s.estado5 = 2
-    //         AND s.estado6 = 2) AS terminados,
-    //         (SELECT COUNT(*) FROM usuarios u
-    //         INNER JOIN seguimiento s ON u.id = s.idUsuario
-    //         WHERE u.anio = YEAR(CURDATE())
-    //         AND u.asignado = '$id'
-    //         AND (s.estado1 <> 0 AND s.estado1 <> 2 OR s.estado2 <> 0 AND s.estado2 <> 2
-    //         OR s.estado3 <> 0 AND s.estado3 <> 2 OR s.estado4 <> 0 AND s.estado4 <> 2
-    //         OR s.estado5 <> 0 AND s.estado5 <> 2 OR s.estado6 <> 0 AND s.estado6 <> 2)) 
-    //         AS empezados,
-    //         (SELECT COUNT(*) FROM usuarios u
-    //         WHERE u.anio = YEAR(CURDATE())
-    //         AND u.asignado = '$id')
-    //         AS total;")
-   
 
 }
 

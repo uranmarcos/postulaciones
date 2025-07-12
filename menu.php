@@ -27,18 +27,36 @@ session_start();
 <body>
     <?php require("shared/header.php")?>
     <div id="app">
-        <div class="contenedor">
+        <div class="contenedor" v-if="buscando">
+            <div class="contenedorLoading">
+                <div class="loading">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="contenedor" v-else>
             <div class="row d-flex justify-content-between mt-3">
                 <div class="col-12 px-0">
                     <div class="row d-flex justify-content-end">
 
-                        <button type="button" class="boton botonActualizar" @click="getEstadoPostulante()">
+                        <button type="button" class="boton botonActualizar" @click="actualizar()">
                             ACTUALIZAR
                         </button>
                     </div>
                 </div>
             </div>
-            <div class="row mt-6">
+             <div class="row mt-6" v-if="!habilitado">
+                <div class="col-12 px-0 my-2 my-md-5 d-flex justify-content-center">
+                    <div class="contenedorLoading">
+                        <div class="loading">
+                            Aún no tenés actividades habilitadas para realizar.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-6" v-if="habilitado">
                 <div class="col-12 col-sm-6 col-md-4 col-sm-12 my-2 my-md-5 d-flex justify-content-center">
                     <div class="opciones" :class="bloqueado1 == true ? 'grey' : ''" @click="irA('actividad1')">
                         <b>ACTIVIDAD 1</b>
@@ -122,7 +140,7 @@ session_start();
                 </div>    
             </div>  
         </div>  
-        <!-- END MODAL ASIGNAR USUARIO -->
+        <!-- END MODAL -->
         <!-- START NOTIFICACION -->
         <div role="alert" id="mitoast" aria-live="assertive" @mouseover="ocultarToast" aria-atomic="true" class="toast">
                 <div class="toast-header">
@@ -194,13 +212,45 @@ session_start();
                idUsuario: null,
                textoToast: null,
                tituloToast: null,
-               modal: false
+               modal: false,
+               habilitado: false,
+               buscando: false
             },
             mounted () {
                 this.idPostulante = <?php echo json_encode($_SESSION["idUsuario"]); ?>;
-                this.getEstadoPostulante();
+                this.buscando = true;
+                this.estaHabilitado();
+                // this.getEstadoPostulante();
             },
             methods:{
+                actualizar () {
+                    // this.habilitado ? this.getEstadoPostulante() : this.estaHabilitado();
+                    this.estaHabilitado();
+                },
+                estaHabilitado () {
+                    let formdata = new FormData();
+                    formdata.append("idUsuario", this.idPostulante);
+                    axios.post("funciones/seguimiento.php?accion=estaHabilitado", formdata)
+                    .then(function(response){   
+                        if (response.data.error) {
+                            app.buscando = false
+                            app.mostrarToast("Error", response.data.mensaje);
+                        } else {
+                            if (response.data.estado == 0) {
+                                app.modal = true
+                            } else if (response.data.estado == 1) {
+                                app.habilitado = false
+                                app.buscando = false
+                            } else {
+                                app.habilitado = true
+                                app.getEstadoPostulante();
+                            }
+                        }
+                       
+                    }).catch( error => {
+                        app.mostrarToast("Error", "No se pudo recuperar la información");
+                    });
+                },
                 getEstadoPostulante() {
                     let formdata = new FormData();
                     formdata.append("idUsuario", this.idPostulante);
@@ -208,7 +258,9 @@ session_start();
                     .then(function(response){   
                         if (response.data.error) {
                             app.mostrarToast("Error", response.data.mensaje);
+                            app.buscando = false;
                         } else {
+                            app.buscando = false;
                             if (response.data.estado != false && response.data.estado.length != 0) {
                                 app.estado1 = response.data.estado[0].estado1;
                                 app.bloqueado1 = response.data.estado[0].habilitado1 == 0 ? true : false ;
@@ -227,8 +279,7 @@ session_start();
                                 app.estado6 = response.data.estado[0].estado6;
                                 app.bloqueado6 = response.data.estado[0].habilitado6 == 0 ? true : false ;
                                 app.validarEstados();
-                            } else {
-                                console.log("no hay info");
+                            } else {                                                    
                                 app.mostrarToast("Error", "No se pudo recuperar la información");
                             }
                         }

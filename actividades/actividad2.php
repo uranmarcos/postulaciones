@@ -382,6 +382,12 @@
     </div>
 
     <style scoped>
+        body {
+            user-select: none;           /* Estándar */
+            -webkit-user-select: none;   /* Safari */
+            -moz-user-select: none;      /* Firefox */
+            -ms-user-select: none;       /* IE/Edge */
+        }
         .opcion{
             width: 900px;
         }
@@ -421,9 +427,11 @@
                 habilitado: false,
             },
             mounted () {
-                this.idPostulante = <?php echo json_encode($_SESSION["idUsuario"]); ?>;
-                //this.comenzarActividad();
+                this.idPostulante = <?php echo json_encode($_SESSION["idUsuario"]); ?>;                
                 this.consultarActividad();
+                document.addEventListener('contextmenu', function (e) {
+                    e.preventDefault();
+                });
             },
             methods:{
                 comenzarActividad () {
@@ -440,7 +448,7 @@
                     formdata.append("id", this.idPostulante);
                     formdata.append("actividad", 2);
                     axios.post("../funciones/accionesActividades.php?accion=consultarActividad", formdata)
-                    .then(function(response){ 
+                    .then(function(response){                     
                         if (response.data.error) {
                             // app.mostrarToast("Error", response.data.mensaje);
                             window.location.href = '../menu.php'; 

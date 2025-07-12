@@ -1,8 +1,14 @@
 <?php
 class ApptivaDB {
+    // private $host = "localhost";
+    // private $usuario = "root";
+    // private $clave = "";
+    // private $db = "postulaciones";
+    // public $conexion;
+
     private $host = "localhost";
-    private $usuario = "root";
-    private $clave = "";
+    private $usuario = "postulaciones";
+    private $clave = 'z$c6D4g07';
     private $db = "postulaciones";
     public $conexion;
     
@@ -84,14 +90,14 @@ class ApptivaDB {
     public function eliminarReunion($id) {
         try {
             $stmt = $this->conexion->prepare("DELETE FROM reuniones WHERE id = ?");
-            $stmt->execute([$id]);
+            $stmt->bind_param("i", $id); // "i" indica tipo entero
+            $stmt->execute();
             return true;
         } catch (\Throwable $th) {
-            // Registrar o mostrar el error correctamente
             error_log("Error al eliminar reunión: " . $th->getMessage());
             return false;
         }
-    } 
+    }
 
     public function actualizarTelefono($id, $telefono) {
         try {

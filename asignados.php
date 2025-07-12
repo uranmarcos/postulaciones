@@ -79,7 +79,7 @@
                                 <ul class="dropdown-menu" >
                                     <li>
                                         <a class="dropdown-item" href="#" @click="exportarPendientes()">
-                                            PENDENTES TEST
+                                            PENDIENTES TEST
                                             <span  data-toggle="tooltip" data-placement="bottom" 
                                                 title="Descarga los usuarios pendientes de realizar las actividades">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi grey bi-info-circle-fill" viewBox="0 0 16 16">
@@ -222,7 +222,6 @@
                                 <th scope="col" >Telefono</th>
                                 <th scope="col" >Nombre</th>
                                 <th scope="col" >Dni</th>
-                                <th scope="col" >Contraseña</th>
                                 <th scope="col" >A1</th>
                                 <th scope="col" >CT</th>
                                 <th scope="col" >Habilitado</th>
@@ -239,17 +238,24 @@
                                             :disabled="usuario.habilitado == 0"
                                             type="checkbox"
                                             v-model="usuario.checked"   
-                                            v-if="usuario.habilitado == 1" 
+                                            v-if="usuario.habilitado > 0" 
                                         >
                                     </td>
                                     <td >{{(usuario.provincia == 'null' || usuario.provincia == '') ? '-' : usuario.provincia }}</td>
                                     <td >{{(usuario.telefono == '0' || usuario.telefono == 0) ? '-' : usuario.telefono }}</td>
                                     <td >{{usuario.nombre}} {{usuario.apellido}}</td>
                                     <td >{{usuario.dni}}</td>
-                                    <td >{{usuario.pass}}</td>
                                     <td >{{usuario.raven}}</td>
                                     <td >{{usuario.ct}}</td>
-                                    <td >{{usuario.habilitado == 1 ? "Sí" : "No"}}</td>
+                                    <td >
+                                        {{usuario.habilitado == 2 ? "Sí" : usuario.habilitado == 1 ? "No" : "Bloqueado"}}
+                                        <span  data-toggle="tooltip" data-placement="bottom" 
+                                            :title="usuario.habilitado == 2 ? 'El Usuario puede realizar actividades' : usuario.habilitado == 1 ? 'El Usuario puede loguearse pero no realizar actividades' : 'El usuario no puede loguearse'">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi grey bi-info-circle-fill" viewBox="0 0 16 16">
+                                                <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+                                            </svg>
+                                        </span>
+                                    </td>
                                     <td >
                                         <div class="text-center" v-if="usuario.observacion">
                                             <button type="button" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" :title="usuario.observacion">
@@ -267,9 +273,9 @@
                                                 </svg>
                                             </button>
                                             <ul class="dropdown-menu">
-                                                <li>
+                                                <li v-if="usuario.habilitado > 0">
                                                     <a class="dropdown-item" @click="resetear(usuario)" href="#">
-                                                        Resetear Contraseña
+                                                        {{usuario.habilitado == 1 ? 'Habilitar' : 'Bloquear'}}
                                                     </a>
                                                 </li>
                                                 <li>
@@ -467,62 +473,6 @@
                                 </div>
                             </div>
                         </div>
-                    
-                        <!-- <div class="modal-body" v-if="!buscandoVoluntarios">
-                            <div class="row">
-                                <div class="col-sm-12 mt-3">
-                                    <label for="nombre">Nombre</label>
-                                    <input disabled class="form-control" v-model="usuario.nombre">
-                                </div>
-                                <div class="col-sm-12 mt-3">
-                                    <label for="apellido">Apellido</label>
-                                    <input disabled class="form-control" v-model="usuario.apellido">
-                                </div>
-                                <div class="col-sm-12 mt-3">
-                                    <label for="ciudad">DNI </label>
-                                    <input disabled class="form-control" v-model="usuario.dni">
-                                </div>     
-                                <div class="col-sm-12 mt-3">
-                                    <label for="ciudad">VOLUNTARIO </label>
-                                    <select class="form-control" v-model="usuario.asignado">
-                                        <option v-for="voluntario in voluntarios" v-bind:value="voluntario.id">{{voluntario.voluntario}}</option>
-                                    </select> 
-                                </div>           
-                            </div>
-                            <div v-if="!asignandoUsuario">
-                                <div class="modal-footer d-flex justify-content-between" v-if="!pedirConfirmacionAsignar">
-                                    <button type="button" class="botonCancelar" @click="cancelarAsignarUsuario()" id="" data-dismiss="modal">Cancelar</button>
-                                    <button type="button" @click="pedirConfirmacionAsignar= true"  class="boton">Asignar</button>
-                                </div>
-                                <div class="modal-footer" v-if="pedirConfirmacionAsignar">
-                                    <div class="row mb-2 d-flex justify-content-center">
-                                        ¿Confirma la asignación del usuario?
-                                    </div>
-                                    <div class="row d-flex justify-content-between">
-                                        <button type="button" class="botonCancelar" @click="pedirConfirmacionAsignar = false">Cancelar</button>
-                                        <button type="button" class="boton" @click="confirmarAsignacionUsuario()">Confirmar</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div v-if="asignandoUsuario">
-                                <div class="modal-footer d-flex justify-content-between">
-                                    <div class="contenedorLoadingModal">
-                                        <div class="loading">
-                                            <div class="spinner-border" role="status">
-                                                <span class="sr-only"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-body" v-if="buscandoVoluntarios">
-                            <div class="loading">
-                                <div class="spinner-border" role="status">
-                                    <span class="sr-only"></span>
-                                </div>
-                            </div>
-                        </div> -->
                     </div>
                     
                 </div>    
@@ -620,7 +570,7 @@
                     <div class="modal-content px-0 py-0">
                         <div class="modal-header">
                             <h5 class="modal-title" id="">
-                                Resetear contraseña
+                                {{usuario.habilitado == 1 ? 'Habilitar Usuario' : 'Bloquear Usuario'}}
                             </h5>
                             <svg xmlns="http://www.w3.org/2000/svg" @click="modalReseteo = false" width="30" height="30" fill="currentColor" class="bi closeModal bi-x-circle-fill" viewBox="0 0 16 16">
                                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
@@ -630,7 +580,7 @@
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-sm-12 mt-3 d-flex justify-content-center" >
-                                    ¿Desea resetear la contraseña al usuario?
+                                    ¿Desea {{usuario.habilitado == 1 ? 'HABILITAR' : 'BLOQUEAR'}} al usuario?
                                 </div>
                                 <div class="col-sm-12 mt-3">
                                     <label for="nombre">Usuario</label>
@@ -645,7 +595,7 @@
                         <div v-if="!reseteando">
                             <div class="modal-footer d-flex justify-content-between">
                                 <button type="button" class="botonCancelar" @click="cancelarResetear()" id="" data-dismiss="modal">Cancelar</button>
-                                <button type="button" class="boton" @click="confirmarResetear()">Confirmar</button>
+                                <button type="button" class="boton" @click="confirmarResetear(usuario.habilitado)">Confirmar</button>
                             </div>
                         </div>
                         <div v-if="reseteando">
@@ -663,56 +613,6 @@
                 </div>    
             </div>    
             <!-- END MODAL RESETEAR CONTRASEÑA -->
-
-            <!-- START MODAL OBSERVAR USUARIO -->
-            <!-- <div v-if="modalObservar">
-                <div id="myModal" class="modal">
-                    <div class="modal-content px-0 py-0">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="">
-                                Agregar Observacion
-                            </h5>
-                            <svg xmlns="http://www.w3.org/2000/svg" @click="cancelarObservar()" width="30" height="30" fill="currentColor" class="bi closeModal bi-x-circle-fill" viewBox="0 0 16 16">
-                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
-                            </svg>
-                        </div>
-                    
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-sm-12 mt-3">
-                                    {{usuario.dni}} - {{usuario.nombre}}
-                                    
-                                </div>
-                                <div class="col-sm-12 mt-3">
-                                    <label for="nombre">OBSERVACIÓN</label>
-                                    <textarea class="form-control" @keydown="changeContador(usuario.observacion)" maxlength="500" id="mensaje" v-model="usuario.observacion">
-
-                                    </textarea>
-                                    <div id="contador">0/100</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div v-if="!observando">
-                            <div class="modal-footer d-flex justify-content-between">
-                                <button type="button" class="botonCancelar" @click="cancelarObservar()" id="" data-dismiss="modal">Cancelar</button>
-                                <button type="button" class="boton" @click="confirmarObservar(usuario)">Confirmar</button>
-                            </div>
-                        </div>
-                        <div v-if="observando">
-                            <div class="modal-footer d-flex justify-content-between">
-                                <div class="contenedorLoadingModal">
-                                    <div class="loading">
-                                        <div class="spinner-border" role="status">
-                                            <span class="sr-only"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>    
-            </div>     -->
-            <!-- END MODAL OBSERVAR USUARIO  --> 
 
             <!-- START MODAL empezados -->
             <div v-if="modalEmpezados">
@@ -1385,7 +1285,8 @@
                     this.usuario.provincia = null;
                     this.usuario.telefono = null;
                     this.usuario.asignado = null;
-                    this.usuario.observacion = null
+                    this.usuario.observacion = null;
+                    this.usuario.habilitado = null;
                 },
 
                 // FUNCIONES EDITAR USUARIO
@@ -1440,6 +1341,7 @@
                     resetear (usuario) {
                         this.modalReseteo = true;
                         this.usuario.id = usuario.id;
+                        this.usuario.habilitado = usuario.habilitado
                         this.usuario.dni = usuario.dni;
                         this.usuario.nombre = usuario.nombre + ' ' + usuario.apellido ;
                         this.usuario.rol = usuario.rol;
@@ -1448,13 +1350,21 @@
                         this.modalReseteo = false;
                         this.resetUsuario();
                     },
-                    confirmarResetear () {
+                    confirmarResetear (habilitado) {
                         this.reseteando = true;
                         let formdata = new FormData();
                     
+                        if (habilitado == 0) {
+                            return app.mostrarToast("Error", "No tiene permisos para modificar el estado del usuario");
+                        }
                         formdata.append("idUsuario", app.usuario.id);
-                    
-                        axios.post("funciones/usuarios.php?accion=resetear", formdata)
+                        if (habilitado == 1) {
+                            formdata.append("habilitado", 2);
+                        }
+                        if (habilitado == 2) {
+                            formdata.append("habilitado", 1);
+                        }
+                        axios.post("funciones/asignados.php?accion=actualizarHabilitado", formdata)
                         .then(function(response){
                             if (response.data.error) {
                                 app.mostrarToast("Error", response.data.mensaje);

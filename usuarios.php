@@ -163,7 +163,6 @@ if (!$_SESSION["autenticado"] || $_SESSION["rol"] == "postulante" ) {
                                 <th scope="col" >Nombre</th>
                                 <th scope="col" >Provincia</th>
                                 <th scope="col" >Dni</th>
-                                <th scope="col" >Contraseña</th>
                                 <th scope="col" >A1</th>
                                 <th scope="col" >CT</th>
                                 <th scope="col" >Habilitado</th>
@@ -179,10 +178,17 @@ if (!$_SESSION["autenticado"] || $_SESSION["rol"] == "postulante" ) {
                                     <td >{{usuario.nombre}} {{usuario.apellido}}</td>
                                     <td >{{usuario.provincia}}</td>
                                     <td >{{usuario.dni}}</td>
-                                    <td >{{usuario.pass}}</td>
                                     <td >{{usuario.raven}}</td>
                                     <td >{{usuario.ct}}</td>
-                                    <td >{{usuario.habilitado == 1 ? "Sí" : "No"}}</td>
+                                    <td >
+                                        {{usuario.habilitado == 2 ? "Sí" : usuario.habilitado == 1 ? "No" : "Bloqueado"}}
+                                        <span  data-toggle="tooltip" data-placement="bottom" 
+                                            :title="usuario.habilitado == 2 ? 'El Usuario puede realizar actividades' : usuario.habilitado == 1 ? 'El Usuario puede loguearse pero no realizar actividades' : 'El usuario no puede loguearse'">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi grey bi-info-circle-fill" viewBox="0 0 16 16">
+                                                <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+                                            </svg>
+                                        </span>
+                                    </td>
                                     <td >{{usuario.anio}}</td>
                                     <td >{{usuario.nombreAsignado}}</td>
                                     <td >
@@ -202,11 +208,6 @@ if (!$_SESSION["autenticado"] || $_SESSION["rol"] == "postulante" ) {
                                                 </svg>
                                             </button>
                                             <ul class="dropdown-menu">
-                                                <li>
-                                                    <a class="dropdown-item" @click="resetear(usuario)" href="#">
-                                                        Resetear Contraseña
-                                                    </a>
-                                                </li>
                                                 <li>
                                                     <a class="dropdown-item" @click="edit(usuario)" href="#">
                                                         Editar
@@ -1092,45 +1093,6 @@ if (!$_SESSION["autenticado"] || $_SESSION["rol"] == "postulante" ) {
                         })
                     },
                 // FUNCIONES EDITAR USUARIO
-
-
-                // FUNCIONES RESETEAR CONTRASEÑA
-                    resetear (usuario) {
-                        this.modalReseteo = true;
-                        this.usuario.id = usuario.id;
-                        this.usuario.dni = usuario.dni;
-                        this.usuario.nombre = usuario.nombre + ' ' + usuario.apellido ;
-                        this.usuario.rol = usuario.rol;
-                    },
-                    cancelarResetear () {
-                        this.modalReseteo = false;
-                        this.resetUsuario();
-                    },
-                    confirmarResetear () {
-                        this.reseteando = true;
-                        let formdata = new FormData();
-                    
-                        formdata.append("idUsuario", app.usuario.id);
-                        formdata.append("dni", app.usuario.dni);
-                    
-                        axios.post("funciones/usuarios.php?accion=resetear", formdata)
-                        .then(function(response){
-                            if (response.data.error) {
-                                app.mostrarToast("Error", response.data.mensaje);
-                            } else {
-                                app.modalReseteo = false;
-                                app.mostrarToast("Éxito", response.data.mensaje);
-                                app.consultarUsuarios();
-                                app.resetUsuario();
-                            }
-                            app.reseteando = false;
-                        }).catch( error => {
-                            app.reseteando = false;
-                            app.mostrarToast("Error", "No se pudo resetar la contraseña");
-                        })
-                    },
-                // FUNCIONES RESETEAR CONTRASEÑA
-
 
                 mostrarToast(titulo, texto) {
                     app.tituloToast = titulo;

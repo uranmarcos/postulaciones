@@ -9,6 +9,12 @@
         $accion = $_GET["accion"];
     }
 
+    function generarContrasenia($nombre) {
+        $palabras = explode(" ", trim($nombre));
+        $primeraPalabra = $palabras[0];
+        $procesada = ucfirst(strtolower($primeraPalabra));
+        return $procesada . "123";
+    }
 
     switch ($accion) {
         case 'contarUsuarios':
@@ -103,8 +109,9 @@
             $nombre = $_POST["nombre"];
             $apellido = $_POST["apellido"];
             $dni = $_POST['dni'];
-            $mail = $_POST['mail'];
-            $contrasenia =  password_hash($dni, PASSWORD_DEFAULT);
+            // $contrasenia =  password_hash($dni, PASSWORD_DEFAULT);
+            $resultado = generarContrasenia($nombre);
+            $contrasenia = password_hash($resultado, PASSWORD_DEFAULT);
             $rol = $_POST["apellido"];
             $habilitado = 1;
             $null = null;
@@ -127,23 +134,7 @@
                 break;
             }
 
-            $dataValidar = " mail LIKE '$mail'"; 
-            $validacion = $user -> hayRegistro($dataValidar);  
-                
-            if ($validacion > 0) {
-                $res["mensaje"] = "El mail ya se encuentra registrado";
-                $res["error"] = true; 
-                $user -> close();
-                break;
-            }
-            if ($validacion === false) {
-                $res["mensaje"] = "La creación no pudo realizarse";
-                $res["error"] = true;
-                $user -> close();
-                break;
-            }
-
-            $data = "'" . $nombre . "', '" . $apellido . "', '" . $dni . "', '" . $contrasenia . "', '" . $mail . "', '" . $rol .
+            $data = "'" . $nombre . "', '" . $apellido . "', '" . $dni . "', '" . $contrasenia . "', '" . $null . "', '" . $rol .
              "', '" . $null . "', '" . $null . "', '" . $null . "', '" . $null . "', '" . $null . "', '" . $null .
              "', '" . $null . "', '" . $habilitado . "', '" . $null . "'";
             
@@ -151,7 +142,7 @@
         
             if ($u) {
                 $res["error"] = false;
-                $res["mensaje"] = "El usuario se creó correctamente. Se le asignó su dni como contraseña";
+                $res["mensaje"] = "Usuario creado. Contraseña asignada: " . $resultado;
                 $user -> close();
             } else {
                 $res["mensaje"] = "No se pudo crear el usuario. Intente nuevamente";
@@ -164,13 +155,19 @@
         case 'resetear':
             $id = $_POST["idUsuario"];
             $dni = $_POST["dni"];
+            $nombre = $_POST["nombre"] ;
 
-            $contrasenia =  password_hash($dni, PASSWORD_DEFAULT);
+            // $palabras = explode(" ", trim($nombre));
+            // $primeraPalabra = $palabras[0];
+            // $procesada = ucfirst(strtolower($primeraPalabra));
+            // $resultado = $procesada . "123";
+            $resultado = generarContrasenia($nombre);
+            $contrasenia =  password_hash($resultado, PASSWORD_DEFAULT);
 
             $u = $user -> resetear($id, $contrasenia);
             if ($u || $u == []) { 
                 $res["usuarios"] = $u;
-                $res["mensaje"] = "Se le asignó la contraseña " . $dni;
+                $res["mensaje"] = "Se le asignó la contraseña " . $resultado;
                 $user -> close();
             } else {
                 $res["u"] = $u;

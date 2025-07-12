@@ -102,10 +102,8 @@
             $nombre = $_POST["nombre"];
             $apellido = $_POST["apellido"];
             $dni = $_POST['dni'];
-            $contrasenia = rand(10000000, 99999999);
             $rol = "postulante";
             $anio = date("Y");
-            //$anio= 2024;
             $provincia = $_POST["provincia"];
             $telefono = $_POST["telefono"];
             $asignado = $_POST['asignado'];
@@ -113,26 +111,27 @@
             $null = null;
             $test = "-";
 
-            // VALIDO QUE EL DNI NO ESTE CARGADO YA EN SISTEMA
+            // VALIDO QUE EL DNI NO ESTE CARGADO YA EN SISTEMA EL AÑO EN CURSO
             $dataValidar = " dni LIKE '$dni'"; 
-            $validacion = $user -> hayRegistro($dataValidar);        
-            if ($validacion != []) {
-                $res["mensaje"] = $validacion;
+            $validacion = $user->validarDniAnio($dni);
+            if ($validacion === true) {
+                $res["mensaje"] = "El DNI ya se está registrado para este año.";
                 $res["error"] = true; 
-                $user -> close();
+                $user->close();
                 break;
             }
-            if ($validacion === false) {
-                $res["mensaje"] = "La creación no pudo realizarse";
+
+            if ($validacion === null) {
+                $res["mensaje"] = "Ocurrió un error. Intente nuevamente.";
                 $res["error"] = true;
-                $user -> close();
+                $user->close();
                 break;
             }
 
             $data["nombre"]     =   $nombre;
             $data["apellido"]   =   $apellido;
             $data["dni"]        =   $dni;
-            $data["contrasenia"]        =   $contrasenia;
+            $data["contrasenia"]        =   $dni;
             $data["rol"]        =   $rol;
             $data["anio"]        =   $anio;
             $data["provincia"]        =   $provincia;
@@ -141,14 +140,11 @@
             $data["test"]        =   $test;
             $data["habilitado"]        =   $habilitado;
 
-            // $data = "'" . $nombre . "', '" . $apellido . "', '" . $dni . "', '" . $contrasenia . "', '" . $null . "', '" . $rol .
-            //  "', '" . $anio . "', '" . $provincia . "', '" . $telefono . "', '" . $asignado . "', '" . $null . "', '" . $test .
-            //  "', '" . $test . "', '" . $habilitado . "', '" . $null . "'";
             $u = $user -> insertarUsuario($data);
            
-            if ($u) {
+            if ($u == "OK") {
                 $res["error"] = false;
-                $res["mensaje"] = "El usuario se creó correctamente. Se le asignó la contraseña " . $contrasenia;
+                $res["mensaje"] = "El usuario se creó correctamente.";
                 $user -> close();
             } else {
                 $res["mensaje"] = "No se pudo crear el usuario. Intente nuevamente";
@@ -252,9 +248,6 @@
             } 
 
         break;
-
-
-
     }
 
     echo json_encode($res);

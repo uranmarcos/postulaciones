@@ -278,39 +278,28 @@
                         formdata.append("password", app.password);
                         formdata.append("voluntario", app.voluntario);
                         axios.post("funciones/acciones.php?accion=login", formdata)
-                        .then(function(response){
-                            // console.log(response.data);
-                            // let respuesta =  JSON.parse(response.data);
-                            // console.log(respuesta);
-                            if (response.data.error) {
-                                app.mostrarToast("Error", response.data.mensaje);
+                        .then(function(r){
+                            let data = r.data 
+                            if (data.error) {
+                                app.mostrarToast("Error", data.mensaje);
                             } else {
-                                if (response.data.mensaje == "OK") {
+                                if (data.mensaje == "OK") {
                                     if (app.recordar) {
                                         localStorage.setItem("usuarioPostulaciones", app.usuario)
                                     } else {
                                         localStorage.removeItem("usuarioPostulaciones", app.usuario)
                                     }
-                                    if (response.data.u == "postulante") {
+                                    if (data.u== "postulante") {
                                         window.location.href = 'menu.php'; 
                                     } else {
                                         window.location.href = 'home.php'; 
                                     } 
-                                } else {
-
                                 }
-                                // if (response.data.token == "d033e22ae348aeb5660fc2140aec35850c4da997") {
-                                //     window.location.href = 'home.php'; 
-                                // } else if (response.data.token == "b665e217b51994789b02b1838e730d6b93baa30f") {
-                                //     window.location.href = 'home.php'; 
-                                // } else {
-                                //     window.location.href = 'index.html'; 
-                                // }
                             }
                             app.loading = false;
                         }).catch( error => {
                             app.loading = false;
-                            app.mostrarToast("Error", response.data.mensaje);
+                            app.mostrarToast("Error", "Hubo un error");
                         })
                     }
                 },

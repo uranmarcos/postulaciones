@@ -39,7 +39,7 @@ session_start();
             </div>
             <!-- END BREADCRUMB -->
             <div class="row mt-6">
-                <div class="col-12 col-sm-6 col-md-4 col-sm-12 my-2 my-md-5 d-flex justify-content-center">
+                <div class="col-12 col-sm-6 col-md-4 col-sm-12 my-2 my-md-3 px-0 d-flex justify-content-center">
                     <div class="opciones" @click="irA('usuarios')">
                     
                         POSTULANTES
@@ -47,7 +47,7 @@ session_start();
                     </div>
                 </div>
 
-                <div class="col-12 col-sm-6 col-md-4 col-sm-12 my-2 my-md-5 d-flex justify-content-center">
+                <div class="col-12 col-sm-6 col-md-4 col-sm-12 my-2 my-md-3 px-0 d-flex justify-content-center">
                     <div class="opciones" @click="irA('asignados')">
                     
                         ASIGNADOS
@@ -55,20 +55,20 @@ session_start();
                     </div>
                 </div>
                
-                <div class="col-12 col-sm-6 col-md-4 col-sm-12 my-2 my-md-5 d-flex justify-content-center">
+                <div class="col-12 col-sm-6 col-md-4 col-sm-12 my-2 my-md-3 px-0 d-flex justify-content-center">
                     <div class="opciones"  @click="irA('seguimiento')">
                         SEGUIMIENTO
                     </div>
                 </div>
 
-                <div class="col-12 col-sm-6 col-md-4 col-sm-12 my-2 my-md-5 d-flex justify-content-center">
+                <div class="col-12 col-sm-6 col-md-4 col-sm-12 my-2 my-md-3 px-0 d-flex justify-content-center">
                     <div class="opciones"  @click="irA('reuniones')">
                         REUNIONES
                     </div>
                 </div>
 
                 <!-- PARA ADMIN -->
-                <div class="col-12 col-sm-6 col-md-4 col-sm-12 my-2 my-md-5 d-flex justify-content-center" v-if="rol == 'admin' || rol == 'general'">
+                <div class="col-12 col-sm-6 col-md-4 col-sm-12 my-2 my-md-3 px-0 d-flex justify-content-center" v-if="rol == 'admin' || rol == 'general'">
                     <div class="opciones" @click="irA('avance')">
                     
                         AVANCE
@@ -76,7 +76,7 @@ session_start();
                     </div>
                 </div>
 
-                <div class="col-12 col-sm-6 col-md-4 col-sm-12 my-2 my-md-5 d-flex justify-content-center" v-if="rol == 'admin' || rol == 'general'">
+                <div class="col-12 col-sm-6 col-md-4 col-sm-12 my-2 my-md-3 px-0 d-flex justify-content-center" v-if="rol == 'admin' || rol == 'general'">
                     <div class="opciones" @click="irA('voluntarios')">
                     
                         VOLUNTARIOS
@@ -84,7 +84,7 @@ session_start();
                     </div>
                 </div>
 
-                <div class="col-12 col-sm-6 col-md-4 col-sm-12 my-2 my-md-5 d-flex justify-content-center" v-if="rol == 'admin'">
+                <div class="col-12 col-sm-6 col-md-4 col-sm-12 my-2 my-md-3 px-0 d-flex justify-content-center" v-if="rol == 'admin'">
                     <div class="opciones" @click="irA('admin')">
                     
                         ADMIN
